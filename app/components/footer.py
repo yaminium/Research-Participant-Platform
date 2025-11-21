@@ -20,12 +20,12 @@ def footer() -> rx.Component:
                     ),
                     rx.el.a(
                         "قوانین و مقررات",
-                        href="#",
+                        href="/terms",
                         class_name="text-gray-400 hover:text-white text-sm font-medium transition-colors mr-6 hover:underline underline-offset-4 decoration-blue-500/50",
                     ),
                     rx.el.a(
                         "حریم خصوصی",
-                        href="#",
+                        href="/privacy",
                         class_name="text-gray-400 hover:text-white text-sm font-medium transition-colors hover:underline underline-offset-4 decoration-blue-500/50",
                     ),
                     class_name="flex flex-wrap items-center justify-center gap-y-2 mt-4 md:mt-0",

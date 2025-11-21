@@ -13,6 +13,7 @@ from app.components.browse_views import (
 )
 from app.components.footer import footer
 from app.components.info_modal import info_modal
+from app.components.legal_pages import privacy_page, terms_page
 from app.states.auth_state import AuthState
 from app.states.study_state import StudyState
 from app.states.application_state import ApplicationState
@@ -359,3 +360,5 @@ app.add_page(create_study_page, route="/create-study")
 app.add_page(browse_page, route="/browse")
 app.add_page(favorites_page, route="/favorites")
 app.add_page(study_detail_page, route="/study/[id]")
+app.add_page(privacy_page, route="/privacy")
+app.add_page(terms_page, route="/terms")

@@ -182,6 +182,8 @@ class AuthState(rx.State):
     reg_confirm_password: str = ""
     reg_role: str = "participant"
     reg_error: str = ""
+    is_edit_profile_open: bool = False
+    editing_name: str = ""
 
     @property
     def _supabase_client(self) -> Client | None:
@@ -456,3 +458,37 @@ class AuthState(rx.State):
     @rx.var
     def is_participant(self) -> bool:
         return self.current_user_role == "participant"
+
+    @rx.event
+    def open_edit_profile(self):
+        if self.current_user:
+            self.editing_name = self.current_user["name"]
+            self.is_edit_profile_open = True
+
+    @rx.event
+    def close_edit_profile(self):
+        self.is_edit_profile_open = False
+
+    @rx.event
+    def set_editing_name(self, value: str):
+        self.editing_name = value
+
+    @rx.event
+    def save_profile(self):
+        if not self.current_user:
+            return
+        if not self.editing_name.strip():
+            return rx.toast.error("نام نمی\u2009تواند خالی باشد.")
+        updated_user = self.current_user.copy()
+        updated_user["name"] = self.editing_name
+        new_users = []
+        for u in self.users:
+            if u["id"] == self.current_user["id"]:
+                new_users.append(updated_user)
+            else:
+                new_users.append(u)
+        self.users = new_users
+        self.current_user = updated_user
+        self._sync_user_to_supabase(updated_user)
+        self.is_edit_profile_open = False
+        return rx.toast.success("پروفایل با موفقیت بروزرسانی شد.")

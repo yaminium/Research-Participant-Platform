@@ -126,6 +126,22 @@ class ApplicationState(rx.State):
         return len(apps)
 
     @rx.var
+    async def stats_response_rate(self) -> str:
+        auth_state = await self.get_state(AuthState)
+        if (
+            not auth_state.current_user
+            or auth_state.current_user["role"] != "researcher"
+        ):
+            return "0%"
+        total = await self.stats_total_applications
+        if total == 0:
+            return "0%"
+        pending = await self.stats_pending_applications
+        processed = total - pending
+        rate = int(processed / total * 100)
+        return f"{rate}%"
+
+    @rx.var
     async def researcher_studies_for_filter(self) -> list[Study]:
         auth_state = await self.get_state(AuthState)
         if not auth_state.current_user:
