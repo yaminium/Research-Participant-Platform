@@ -208,8 +208,16 @@ def public_study_card(study: Study) -> rx.Component:
                     class_name="text-lg font-bold text-white line-clamp-1 mb-1",
                 ),
                 rx.el.p(
-                    study["participant_criteria"],
-                    class_name="text-xs text-gray-400 mb-3 line-clamp-1",
+                    rx.el.span("سلامت: ", class_name="text-gray-500"),
+                    translate_health(study["psychological_health_type"]),
+                    rx.el.span("، سن: ", class_name="text-gray-500"),
+                    study["age_range_min"].to_string(),
+                    "-",
+                    study["age_range_max"].to_string(),
+                    " سال",
+                    rx.el.span("، جنسیت: ", class_name="text-gray-500"),
+                    translate_gender(study["gender_requirement"]),
+                    class_name="text-xs text-gray-300 mb-3 line-clamp-1",
                 ),
                 rx.el.p(
                     study["description"],
