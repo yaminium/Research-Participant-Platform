@@ -33,24 +33,43 @@ def base_layout(content: rx.Component) -> rx.Component:
 def feature_item(icon: str, title: str, description: str) -> rx.Component:
     return rx.el.div(
         rx.el.div(
-            rx.icon(icon, class_name="h-8 w-8 text-blue-400"),
-            class_name="w-16 h-16 bg-blue-900/30 rounded-2xl flex items-center justify-center mb-6",
+            class_name="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-gradient-to-br from-cyan-500/20 to-blue-500/0 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
         ),
-        rx.el.h3(title, class_name="text-xl font-bold text-white mb-3"),
-        rx.el.p(description, class_name="text-gray-300 leading-relaxed"),
-        class_name="bg-slate-900/60 backdrop-blur-sm p-8 rounded-2xl border border-white/10 shadow-lg hover:bg-slate-800/60 transition-all",
+        rx.el.div(
+            rx.el.div(
+                rx.icon(
+                    icon,
+                    class_name="h-8 w-8 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.6)] group-hover:text-cyan-300 transition-colors",
+                ),
+                class_name="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center mb-6 border border-white/5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 relative z-10",
+            ),
+            rx.el.h3(
+                title,
+                class_name="text-xl font-bold text-white mb-3 group-hover:text-cyan-300 transition-colors relative z-10",
+            ),
+            rx.el.p(
+                description,
+                class_name="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors relative z-10",
+            ),
+        ),
+        class_name="group relative p-8 rounded-3xl border border-white/10 bg-slate-900/40 backdrop-blur-md overflow-hidden hover:border-cyan-500/30 transition-all duration-300 hover:shadow-[0_0_30px_-10px_rgba(6,182,212,0.15)] hover:-translate-y-1",
     )
 
 
 def step_item(number: str, title: str, description: str) -> rx.Component:
     return rx.el.div(
         rx.el.div(
-            rx.el.span(number, class_name="text-2xl font-bold text-blue-400"),
-            class_name="w-12 h-12 rounded-full bg-blue-900/30 flex items-center justify-center mb-4",
+            rx.el.span(
+                number, class_name="text-2xl font-bold text-white drop-shadow-md"
+            ),
+            class_name="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(6,182,212,0.4)] group-hover:scale-110 group-hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] transition-all duration-300 border border-white/20 z-10 relative",
         ),
-        rx.el.h4(title, class_name="text-lg font-bold text-white mb-2"),
-        rx.el.p(description, class_name="text-gray-300 text-sm"),
-        class_name="flex flex-col items-center text-center max-w-xs",
+        rx.el.h4(
+            title,
+            class_name="text-lg font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors",
+        ),
+        rx.el.p(description, class_name="text-gray-400 text-sm leading-relaxed"),
+        class_name="flex flex-col items-center text-center max-w-xs group relative",
     )
 
 
@@ -123,13 +142,16 @@ def index() -> rx.Component:
                 rx.el.div(
                     rx.el.h2(
                         "چگونه کار می\u200cکند",
-                        class_name="text-3xl font-bold text-white text-center mb-16",
+                        class_name="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-500 text-center mb-16 drop-shadow-[0_2px_10px_rgba(59,130,246,0.5)]",
                     ),
                     rx.el.div(
                         rx.el.div(
+                            rx.el.div(
+                                class_name="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-blue-600"
+                            ),
                             rx.el.h3(
                                 "برای شرکت\u200cکنندگان",
-                                class_name="text-xl font-bold text-blue-400 mb-8 text-center",
+                                class_name="text-xl font-bold text-cyan-400 mb-10 text-center drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]",
                             ),
                             rx.el.div(
                                 step_item(
@@ -137,24 +159,33 @@ def index() -> rx.Component:
                                     "ایجاد حساب کاربری",
                                     "برای شروع به عنوان شرکت\u200cکننده ثبت\u200cنام کنید.",
                                 ),
+                                rx.el.div(
+                                    class_name="hidden md:block w-px h-32 bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent"
+                                ),
                                 step_item(
                                     "۲",
                                     "مرور مطالعات",
                                     "مطالعاتی که با پروفایل شما مطابقت دارند را پیدا کنید.",
+                                ),
+                                rx.el.div(
+                                    class_name="hidden md:block w-px h-32 bg-gradient-to-b from-transparent via-cyan-500/30 to-transparent"
                                 ),
                                 step_item(
                                     "۳",
                                     "درخواست و مشارکت",
                                     "درخواست ارسال کنید و در پیشرفت علم سهیم باشید.",
                                 ),
-                                class_name="grid grid-cols-1 md:grid-cols-3 gap-8",
+                                class_name="flex flex-col md:flex-row justify-between items-center gap-8",
                             ),
-                            class_name="bg-slate-900/60 backdrop-blur-sm rounded-3xl p-8 border border-white/10",
+                            class_name="relative bg-slate-900/40 backdrop-blur-md rounded-3xl p-8 border border-white/10 hover:border-cyan-500/30 transition-colors duration-500 shadow-lg",
                         ),
                         rx.el.div(
+                            rx.el.div(
+                                class_name="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-blue-600"
+                            ),
                             rx.el.h3(
                                 "برای پژوهشگران",
-                                class_name="text-xl font-bold text-blue-400 mb-8 text-center",
+                                class_name="text-xl font-bold text-purple-400 mb-10 text-center drop-shadow-[0_0_5px_rgba(168,85,247,0.5)]",
                             ),
                             rx.el.div(
                                 step_item(
@@ -162,30 +193,36 @@ def index() -> rx.Component:
                                     "انتشار مطالعه",
                                     "فراخوان\u200cهای دقیق برای پژوهش خود ایجاد کنید.",
                                 ),
+                                rx.el.div(
+                                    class_name="hidden md:block w-px h-32 bg-gradient-to-b from-transparent via-purple-500/30 to-transparent"
+                                ),
                                 step_item(
                                     "۲",
                                     "جذب نیرو",
                                     "درخواست\u200cهای شرکت\u200cکنندگان را دریافت و مدیریت کنید.",
+                                ),
+                                rx.el.div(
+                                    class_name="hidden md:block w-px h-32 bg-gradient-to-b from-transparent via-purple-500/30 to-transparent"
                                 ),
                                 step_item(
                                     "۳",
                                     "انجام پژوهش",
                                     "با شرکت\u200cکنندگان هماهنگ کنید و داده\u200cها را جمع\u200cآوری کنید.",
                                 ),
-                                class_name="grid grid-cols-1 md:grid-cols-3 gap-8",
+                                class_name="flex flex-col md:flex-row justify-between items-center gap-8",
                             ),
-                            class_name="bg-slate-900/60 backdrop-blur-sm rounded-3xl p-8 border border-white/10",
+                            class_name="relative bg-slate-900/40 backdrop-blur-md rounded-3xl p-8 border border-white/10 hover:border-purple-500/30 transition-colors duration-500 shadow-lg",
                         ),
-                        class_name="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+                        class_name="grid grid-cols-1 gap-8 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8",
                     ),
-                    class_name="py-24",
+                    class_name="py-24 relative",
                 )
             ),
             rx.el.div(
                 rx.el.div(
                     rx.el.h2(
                         "چرا نورو ریکروت؟",
-                        class_name="text-3xl font-bold text-white text-center mb-16",
+                        class_name="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-500 text-center mb-16 drop-shadow-[0_2px_10px_rgba(59,130,246,0.5)]",
                     ),
                     rx.el.div(
                         feature_item(
@@ -205,7 +242,7 @@ def index() -> rx.Component:
                         ),
                         class_name="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
                     ),
-                    class_name="py-24",
+                    class_name="py-24 relative",
                 )
             ),
             rx.el.div(
