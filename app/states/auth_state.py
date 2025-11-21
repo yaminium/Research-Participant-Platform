@@ -19,6 +19,12 @@ class AuthState(rx.State):
             "role": "researcher",
             "bookmarks": [],
             "created_at": "2023-01-01",
+            "education_level": "Ph.D.",
+            "field_of_study": "Neuroscience",
+            "occupation": "Senior Researcher",
+            "date_of_birth": "1985-05-12",
+            "phone_number": "09120000001",
+            "profile_picture": "",
         },
         {
             "id": "user_2",
@@ -28,6 +34,12 @@ class AuthState(rx.State):
             "role": "participant",
             "bookmarks": [],
             "created_at": "2023-01-02",
+            "education_level": "Bachelor",
+            "field_of_study": "Computer Science",
+            "occupation": "Student",
+            "date_of_birth": "1998-08-20",
+            "phone_number": "09120000002",
+            "profile_picture": "",
         },
     ]
     studies: list[Study] = [
@@ -184,6 +196,12 @@ class AuthState(rx.State):
     reg_error: str = ""
     is_edit_profile_open: bool = False
     editing_name: str = ""
+    editing_education_level: str = ""
+    editing_field_of_study: str = ""
+    editing_occupation: str = ""
+    editing_date_of_birth: str = ""
+    editing_phone_number: str = ""
+    editing_profile_picture: str = ""
 
     @property
     def _supabase_client(self) -> Client | None:
@@ -206,6 +224,12 @@ class AuthState(rx.State):
             "password_hash": user["password_hash"],
             "bookmarks": user.get("bookmarks", []),
             "created_at": user["created_at"],
+            "education_level": user.get("education_level", ""),
+            "field_of_study": user.get("field_of_study", ""),
+            "occupation": user.get("occupation", ""),
+            "date_of_birth": user.get("date_of_birth"),
+            "phone_number": user.get("phone_number", ""),
+            "profile_picture": user.get("profile_picture", ""),
         }
         try:
             res = (
@@ -260,6 +284,12 @@ class AuthState(rx.State):
             "role": role,
             "bookmarks": data.get("bookmarks") or [],
             "created_at": data.get("created_at", datetime.datetime.now().isoformat()),
+            "education_level": data.get("education_level", ""),
+            "field_of_study": data.get("field_of_study", ""),
+            "occupation": data.get("occupation", ""),
+            "date_of_birth": data.get("date_of_birth", ""),
+            "phone_number": data.get("phone_number", ""),
+            "profile_picture": data.get("profile_picture", ""),
         }
 
     def _hash_password(self, password: str) -> str:
@@ -294,6 +324,12 @@ class AuthState(rx.State):
                     "role": "participant",
                     "bookmarks": [],
                     "created_at": datetime.datetime.now().isoformat(),
+                    "education_level": "",
+                    "field_of_study": "",
+                    "occupation": "",
+                    "date_of_birth": None,
+                    "phone_number": "",
+                    "profile_picture": "",
                 }
                 self.users.append(new_user)
                 self.current_user = new_user
@@ -387,6 +423,12 @@ class AuthState(rx.State):
             "role": self.reg_role,
             "bookmarks": [],
             "created_at": datetime.datetime.now().isoformat(),
+            "education_level": "",
+            "field_of_study": "",
+            "occupation": "",
+            "date_of_birth": None,
+            "phone_number": "",
+            "profile_picture": "",
         }
         self.users.append(new_user)
         self._sync_user_to_supabase(new_user)
@@ -463,6 +505,12 @@ class AuthState(rx.State):
     def open_edit_profile(self):
         if self.current_user:
             self.editing_name = self.current_user["name"]
+            self.editing_education_level = self.current_user.get("education_level", "")
+            self.editing_field_of_study = self.current_user.get("field_of_study", "")
+            self.editing_occupation = self.current_user.get("occupation", "")
+            self.editing_date_of_birth = self.current_user.get("date_of_birth", "")
+            self.editing_phone_number = self.current_user.get("phone_number", "")
+            self.editing_profile_picture = self.current_user.get("profile_picture", "")
             self.is_edit_profile_open = True
 
     @rx.event
@@ -474,6 +522,35 @@ class AuthState(rx.State):
         self.editing_name = value
 
     @rx.event
+    def set_editing_education_level(self, value: str):
+        self.editing_education_level = value
+
+    @rx.event
+    def set_editing_field_of_study(self, value: str):
+        self.editing_field_of_study = value
+
+    @rx.event
+    def set_editing_occupation(self, value: str):
+        self.editing_occupation = value
+
+    @rx.event
+    def set_editing_date_of_birth(self, value: str):
+        self.editing_date_of_birth = value
+
+    @rx.event
+    def set_editing_phone_number(self, value: str):
+        self.editing_phone_number = value
+
+    @rx.event
+    async def handle_profile_picture_upload(self, files: list[rx.UploadFile]):
+        for file in files:
+            upload_data = await file.read()
+            outfile = rx.get_upload_dir() / file.name
+            with outfile.open("wb") as f:
+                f.write(upload_data)
+            self.editing_profile_picture = file.name
+
+    @rx.event
     def save_profile(self):
         if not self.current_user:
             return
@@ -481,6 +558,12 @@ class AuthState(rx.State):
             return rx.toast.error("نام نمی\u2009تواند خالی باشد.")
         updated_user = self.current_user.copy()
         updated_user["name"] = self.editing_name
+        updated_user["education_level"] = self.editing_education_level
+        updated_user["field_of_study"] = self.editing_field_of_study
+        updated_user["occupation"] = self.editing_occupation
+        updated_user["date_of_birth"] = self.editing_date_of_birth
+        updated_user["phone_number"] = self.editing_phone_number
+        updated_user["profile_picture"] = self.editing_profile_picture
         new_users = []
         for u in self.users:
             if u["id"] == self.current_user["id"]:

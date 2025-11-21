@@ -8,10 +8,13 @@ from app.components.application_form import application_form
 
 
 def filter_section() -> rx.Component:
-    input_class = "w-full rounded-lg border-white/10 bg-slate-950/50 text-white placeholder-gray-500 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+    input_class = "w-full rounded-lg border-white/10 bg-slate-950/80 text-white placeholder-gray-400 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-sm transition-colors"
     return rx.el.div(
         rx.el.div(
-            rx.el.h3("فیلترها", class_name="text-lg font-semibold text-white mb-4"),
+            rx.el.h3(
+                "فیلترها",
+                class_name="text-lg font-bold text-white mb-6 flex items-center gap-2 border-b border-white/10 pb-3",
+            ),
             rx.el.div(
                 rx.el.label(
                     "جستجو", class_name="block text-sm font-medium text-gray-300 mb-1"
@@ -109,7 +112,7 @@ def filter_section() -> rx.Component:
                 ),
                 class_name="mb-4",
             ),
-            class_name="bg-slate-900/60 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/10",
+            class_name="bg-gradient-to-br from-slate-900/95 via-slate-900/95 to-indigo-950/50 backdrop-blur-xl p-6 rounded-2xl shadow-xl border border-white/10 border-t-4 border-t-blue-500 sticky top-24",
         ),
         class_name="w-full md:w-72 flex-shrink-0",
     )
@@ -203,7 +206,7 @@ def public_study_card(study: Study) -> rx.Component:
             ),
             class_name="flex flex-col h-full p-5",
         ),
-        class_name="bg-slate-900/60 backdrop-blur-md rounded-2xl shadow-sm border border-white/10 hover:border-white/20 hover:shadow-md transition-all overflow-hidden h-full flex flex-col relative",
+        class_name="bg-slate-900/60 backdrop-blur-md rounded-2xl shadow-sm border border-white/10 transition-all duration-300 ease-in-out hover:scale-[1.03] hover:shadow-[0_20px_50px_-12px_rgba(59,130,246,0.3)] hover:border-blue-500/50 overflow-hidden h-full flex flex-col relative group z-0 hover:z-10",
     )
 
 

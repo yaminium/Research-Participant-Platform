@@ -4,7 +4,14 @@ from app.states.study_state import StudyState
 from app.states.application_state import ApplicationState
 
 
+def form_label(text: str) -> rx.Component:
+    return rx.el.label(
+        text, class_name="block text-xs font-medium text-gray-400 mb-1.5"
+    )
+
+
 def edit_profile_modal() -> rx.Component:
+    input_class = "block w-full rounded-lg border-white/10 bg-slate-950/50 text-white placeholder-gray-500 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm py-2.5"
     return rx.radix.primitives.dialog.root(
         rx.radix.primitives.dialog.portal(
             rx.radix.primitives.dialog.overlay(
@@ -15,37 +22,145 @@ def edit_profile_modal() -> rx.Component:
                     rx.el.div(
                         rx.el.h3(
                             "ویرایش پروفایل",
-                            class_name="text-xl font-bold text-white mb-4",
+                            class_name="text-xl font-bold text-white mb-6",
                         ),
                         rx.el.div(
-                            rx.el.label(
-                                "نام و نام خانوادگی",
-                                class_name="block text-sm font-medium text-gray-300 mb-1.5",
+                            rx.el.div(
+                                form_label("تصویر پروفایل"),
+                                rx.el.div(
+                                    rx.cond(
+                                        AuthState.editing_profile_picture != "",
+                                        rx.image(
+                                            src=rx.get_upload_url(
+                                                AuthState.editing_profile_picture
+                                            ),
+                                            class_name="h-20 w-20 rounded-full object-cover border-2 border-white/10",
+                                        ),
+                                        rx.el.div(
+                                            rx.icon(
+                                                "user",
+                                                class_name="h-10 w-10 text-gray-400",
+                                            ),
+                                            class_name="h-20 w-20 rounded-full bg-slate-800 flex items-center justify-center border-2 border-white/10",
+                                        ),
+                                    ),
+                                    rx.el.div(
+                                        rx.upload.root(
+                                            rx.el.button(
+                                                "انتخاب تصویر",
+                                                class_name="w-full px-3 py-1.5 text-xs font-medium text-blue-300 bg-blue-900/20 border border-blue-500/20 rounded-lg hover:bg-blue-900/30 transition-colors",
+                                            ),
+                                            id="upload_profile_pic",
+                                            max_files=1,
+                                            accept={
+                                                "image/png": [".png"],
+                                                "image/jpeg": [".jpg", ".jpeg"],
+                                                "image/webp": [".webp"],
+                                            },
+                                        ),
+                                        rx.el.button(
+                                            "آپلود",
+                                            on_click=AuthState.handle_profile_picture_upload(
+                                                rx.upload_files(
+                                                    upload_id="upload_profile_pic"
+                                                )
+                                            ),
+                                            class_name="w-full mt-2 px-3 py-1.5 text-xs font-medium text-green-300 bg-green-900/20 border border-green-500/20 rounded-lg hover:bg-green-900/30 transition-colors",
+                                        ),
+                                        class_name="flex flex-col w-32",
+                                    ),
+                                    class_name="flex items-center gap-4",
+                                ),
+                                class_name="mb-6 p-4 bg-slate-950/30 rounded-xl border border-white/5",
                             ),
-                            rx.el.input(
-                                default_value=AuthState.editing_name,
-                                on_change=AuthState.set_editing_name,
-                                class_name="block w-full rounded-lg border-white/10 bg-slate-950/50 text-white placeholder-gray-500 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm py-2.5",
+                            rx.el.div(
+                                rx.el.div(
+                                    form_label("نام و نام خانوادگی"),
+                                    rx.el.input(
+                                        default_value=AuthState.editing_name,
+                                        on_change=AuthState.set_editing_name,
+                                        class_name=input_class,
+                                    ),
+                                ),
+                                rx.el.div(
+                                    form_label("شماره تماس"),
+                                    rx.el.input(
+                                        default_value=AuthState.editing_phone_number,
+                                        on_change=AuthState.set_editing_phone_number,
+                                        placeholder="0912...",
+                                        class_name=input_class,
+                                    ),
+                                ),
+                                class_name="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4",
                             ),
-                            class_name="mb-6",
-                        ),
-                        rx.el.div(
-                            rx.radix.primitives.dialog.close(
+                            rx.el.div(
+                                rx.el.div(
+                                    form_label("تاریخ تولد"),
+                                    rx.el.input(
+                                        type="date",
+                                        default_value=AuthState.editing_date_of_birth,
+                                        on_change=AuthState.set_editing_date_of_birth,
+                                        class_name=input_class,
+                                    ),
+                                ),
+                                rx.el.div(
+                                    form_label("سطح تحصیلات"),
+                                    rx.el.select(
+                                        rx.el.option("انتخاب کنید", value=""),
+                                        rx.el.option(
+                                            "زیر دیپلم", value="Under Diploma"
+                                        ),
+                                        rx.el.option("دیپلم", value="Diploma"),
+                                        rx.el.option("کاردانی", value="Associate"),
+                                        rx.el.option("کارشناسی", value="Bachelor"),
+                                        rx.el.option("کارشناسی ارشد", value="Master"),
+                                        rx.el.option("دکتری", value="Ph.D."),
+                                        value=AuthState.editing_education_level,
+                                        on_change=AuthState.set_editing_education_level,
+                                        class_name=input_class,
+                                    ),
+                                ),
+                                class_name="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4",
+                            ),
+                            rx.el.div(
+                                rx.el.div(
+                                    form_label("رشته تحصیلی"),
+                                    rx.el.input(
+                                        default_value=AuthState.editing_field_of_study,
+                                        on_change=AuthState.set_editing_field_of_study,
+                                        placeholder="مثال: روانشناسی",
+                                        class_name=input_class,
+                                    ),
+                                ),
+                                rx.el.div(
+                                    form_label("شغل"),
+                                    rx.el.input(
+                                        default_value=AuthState.editing_occupation,
+                                        on_change=AuthState.set_editing_occupation,
+                                        placeholder="مثال: دانشجو",
+                                        class_name=input_class,
+                                    ),
+                                ),
+                                class_name="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8",
+                            ),
+                            rx.el.div(
+                                rx.radix.primitives.dialog.close(
+                                    rx.el.button(
+                                        "لغو",
+                                        class_name="px-4 py-2 border border-white/10 rounded-lg text-gray-300 hover:bg-white/5 text-sm font-medium transition-colors ml-3",
+                                        on_click=AuthState.close_edit_profile,
+                                    )
+                                ),
                                 rx.el.button(
-                                    "لغو",
-                                    class_name="px-4 py-2 border border-white/10 rounded-lg text-gray-300 hover:bg-white/5 text-sm font-medium transition-colors ml-3",
-                                    on_click=AuthState.close_edit_profile,
-                                )
+                                    "ذخیره تغییرات",
+                                    on_click=AuthState.save_profile,
+                                    class_name="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium shadow-lg transition-all",
+                                ),
+                                class_name="flex justify-end border-t border-white/10 pt-6",
                             ),
-                            rx.el.button(
-                                "ذخیره تغییرات",
-                                on_click=AuthState.save_profile,
-                                class_name="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium shadow-lg transition-all",
-                            ),
-                            class_name="flex justify-end",
                         ),
                     ),
-                    class_name="bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 w-full max-w-md relative",
+                    class_name="bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 w-full max-w-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar",
                 ),
                 class_name="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] outline-none",
             ),
@@ -78,8 +193,20 @@ def profile_header() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(
-                rx.icon("user", class_name="h-12 w-12 text-white"),
-                class_name="h-24 w-24 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center ring-4 ring-white/20 shadow-lg",
+                rx.cond(
+                    AuthState.current_user["profile_picture"] != "",
+                    rx.image(
+                        src=rx.get_upload_url(
+                            AuthState.current_user["profile_picture"]
+                        ),
+                        class_name="h-24 w-24 rounded-full object-cover ring-4 ring-white/20 shadow-lg",
+                    ),
+                    rx.el.div(
+                        rx.icon("user", class_name="h-12 w-12 text-white"),
+                        class_name="h-24 w-24 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center ring-4 ring-white/20 shadow-lg",
+                    ),
+                ),
+                class_name="relative",
             ),
             rx.el.div(
                 rx.el.h1(
@@ -91,15 +218,40 @@ def profile_header() -> rx.Component:
                     rx.el.p(AuthState.current_user_email, class_name="text-gray-300"),
                     class_name="flex items-center mt-1",
                 ),
+                rx.cond(
+                    AuthState.current_user["phone_number"] != "",
+                    rx.el.div(
+                        rx.icon("phone", class_name="h-4 w-4 ml-2 text-gray-400"),
+                        rx.el.p(
+                            AuthState.current_user["phone_number"],
+                            class_name="text-gray-300",
+                        ),
+                        class_name="flex items-center mt-1",
+                    ),
+                ),
                 rx.el.div(
                     rx.el.span(
                         rx.cond(
                             AuthState.current_user_role == "researcher",
                             "پژوهشگر",
-                            "شرکت\u200cکننده",
+                            "شرکت\u2009کننده",
                         ),
                         class_name="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900/50 text-blue-200 mt-3 uppercase tracking-wide border border-blue-500/20",
-                    )
+                    ),
+                    rx.cond(
+                        AuthState.current_user["education_level"] != "",
+                        rx.el.span(
+                            AuthState.current_user["education_level"],
+                            class_name="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-900/50 text-purple-200 mt-3 mr-2 border border-purple-500/20",
+                        ),
+                    ),
+                    rx.cond(
+                        AuthState.current_user["occupation"] != "",
+                        rx.el.span(
+                            AuthState.current_user["occupation"],
+                            class_name="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-gray-300 mt-3 mr-2 border border-white/10",
+                        ),
+                    ),
                 ),
                 class_name="mr-6",
             ),

@@ -10,6 +10,12 @@ class User(TypedDict):
     role: str
     bookmarks: list[str]
     created_at: str
+    education_level: Optional[str]
+    field_of_study: Optional[str]
+    occupation: Optional[str]
+    date_of_birth: Optional[str]
+    phone_number: Optional[str]
+    profile_picture: Optional[str]
 
 
 class Study(TypedDict):
