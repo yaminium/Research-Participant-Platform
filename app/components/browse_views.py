@@ -7,6 +7,44 @@ from app.components.navbar import navbar
 from app.components.application_form import application_form
 
 
+def translate_location(location: str) -> rx.Component:
+    return rx.match(location, ("Online", "آنلاین"), ("In-Person", "حضوری"), location)
+
+
+def translate_experiment(exp_type: str) -> rx.Component:
+    return rx.match(
+        exp_type,
+        ("Paper Based", "کاغذی"),
+        ("Computer Based", "کامپیوتری"),
+        ("Eye-Tracker", "ردیاب چشم"),
+        exp_type,
+    )
+
+
+def translate_health(health: str) -> rx.Component:
+    return rx.match(
+        health,
+        ("No Preference", "بدون ترجیح"),
+        ("Psychologically Healthy", "سالم از نظر روانی"),
+        ("Specific Psychological Conditions", "شرایط خاص روانشناختی"),
+        ("Mental Disorder", "اختلال روانی"),
+        ("Twins", "دوقلوها"),
+        ("Siblings (Non-Twin)", "خواهر و برادر (غیر دوقلو)"),
+        health,
+    )
+
+
+def translate_gender(gender: str) -> rx.Component:
+    return rx.match(
+        gender,
+        ("Any", "هر جنسیتی"),
+        ("Male", "مرد"),
+        ("Female", "زن"),
+        ("Other", "سایر"),
+        gender,
+    )
+
+
 def filter_section() -> rx.Component:
     input_class = "w-full rounded-lg border-white/10 bg-slate-950/80 text-white placeholder-gray-400 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-400/20 text-sm transition-colors"
     return rx.el.div(
@@ -135,13 +173,13 @@ def public_study_card(study: Study) -> rx.Component:
                 rx.el.div(
                     rx.el.div(
                         rx.el.span(
-                            study["location_type"],
+                            translate_location(study["location_type"]),
                             class_name="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900/30 text-blue-300 border border-blue-500/20",
                         ),
                         rx.cond(
                             study.get("experiment_type") != "",
                             rx.el.span(
-                                study.get("experiment_type"),
+                                translate_experiment(study.get("experiment_type")),
                                 class_name="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-900/30 text-purple-300 border border-purple-500/20 ml-2",
                             ),
                         ),
@@ -347,18 +385,18 @@ def favorites_page() -> rx.Component:
     )
 
 
-def detail_item(label: str, value: str, icon: str) -> rx.Component:
+def detail_item(label: str, value: rx.Component | str, icon: str) -> rx.Component:
     return rx.el.div(
-        rx.icon(icon, class_name="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0"),
+        rx.icon(icon, class_name="h-8 w-8 text-blue-400 mt-1 flex-shrink-0"),
         rx.el.div(
             rx.el.span(
                 label,
-                class_name="block text-xs font-medium text-gray-400 uppercase tracking-wider",
+                class_name="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-1",
             ),
-            rx.el.span(value, class_name="block text-sm text-white mt-0.5 font-medium"),
-            class_name="ml-3",
+            rx.el.span(value, class_name="block text-lg text-white font-semibold"),
+            class_name="ml-4 flex-grow",
         ),
-        class_name="flex items-start p-4 bg-slate-950/30 rounded-xl border border-white/5",
+        class_name="flex items-start p-5 bg-slate-950/50 rounded-2xl border border-white/10 hover:border-blue-500/30 transition-colors group",
     )
 
 
@@ -374,9 +412,9 @@ def study_detail_page() -> rx.Component:
                         rx.el.div(
                             rx.el.a(
                                 rx.el.div(
-                                    rx.icon("arrow-right", class_name="h-4 w-4 ml-2"),
+                                    rx.icon("arrow-right", class_name="h-5 w-5 ml-2"),
                                     "بازگشت به مرور",
-                                    class_name="flex items-center text-sm font-medium text-gray-400 hover:text-white mb-6",
+                                    class_name="flex items-center text-base font-medium text-gray-400 hover:text-white mb-8 transition-colors",
                                 ),
                                 href="/browse",
                             ),
@@ -384,7 +422,7 @@ def study_detail_page() -> rx.Component:
                                 rx.el.div(
                                     rx.el.h1(
                                         study["title"],
-                                        class_name="text-3xl md:text-4xl font-bold text-white leading-tight",
+                                        class_name="text-4xl md:text-5xl font-extrabold text-white leading-tight drop-shadow-lg mb-6",
                                     ),
                                     rx.cond(
                                         AuthState.is_authenticated,
@@ -395,35 +433,36 @@ def study_detail_page() -> rx.Component:
                                                 ),
                                                 rx.icon(
                                                     "heart",
-                                                    class_name="h-8 w-8 text-red-500 fill-current",
+                                                    class_name="h-10 w-10 text-red-500 fill-current drop-shadow-md",
                                                 ),
                                                 rx.icon(
                                                     "heart",
-                                                    class_name="h-8 w-8 text-gray-400 hover:text-red-500",
+                                                    class_name="h-10 w-10 text-gray-400 hover:text-red-500 transition-colors",
                                                 ),
                                             ),
                                             on_click=lambda: AuthState.toggle_bookmark(
                                                 study["id"]
                                             ),
+                                            class_name="p-2 rounded-full hover:bg-white/5 transition-colors",
                                         ),
                                     ),
-                                    class_name="flex justify-between items-start mb-4",
+                                    class_name="flex justify-between items-start",
                                 ),
                                 rx.el.div(
                                     rx.el.span(
                                         study["status"],
-                                        class_name="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-900/30 text-green-300 border border-green-500/20",
+                                        class_name="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-bold bg-green-900/40 text-green-300 border border-green-500/30 shadow-[0_0_10px_rgba(34,197,94,0.2)]",
                                     ),
                                     rx.el.span(
                                         f"ارسال شده توسط {BrowseState.current_study_researcher_name}",
-                                        class_name="text-sm text-gray-400 flex items-center",
+                                        class_name="text-base text-gray-400 flex items-center",
                                     ),
-                                    class_name="flex items-center gap-4",
+                                    class_name="flex items-center gap-6 mt-4",
                                 ),
-                                class_name="mb-8",
+                                class_name="mb-12",
                             ),
                         ),
-                        class_name="max-w-4xl mx-auto",
+                        class_name="max-w-5xl mx-auto px-4",
                     ),
                     rx.el.div(
                         rx.el.div(
@@ -432,61 +471,77 @@ def study_detail_page() -> rx.Component:
                                     study.get("study_image") != "",
                                     rx.image(
                                         src=rx.get_upload_url(study.get("study_image")),
-                                        class_name="w-full h-64 object-cover rounded-2xl mb-8 shadow-md border border-white/10",
+                                        class_name="w-full h-80 object-cover rounded-3xl mb-10 shadow-2xl border border-white/10",
                                     ),
                                 ),
                                 rx.el.h2(
                                     "درباره مطالعه",
-                                    class_name="text-xl font-bold text-white mb-4",
+                                    class_name="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 mb-6",
                                 ),
                                 rx.el.p(
                                     study["description"],
-                                    class_name="text-gray-300 leading-relaxed whitespace-pre-wrap mb-8",
+                                    class_name="text-gray-300 text-lg leading-loose whitespace-pre-wrap mb-10",
                                 ),
                                 rx.el.h2(
                                     "روش اجرا",
-                                    class_name="text-xl font-bold text-white mb-4",
+                                    class_name="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 mb-6",
                                 ),
                                 rx.el.p(
                                     study["procedure_description"],
-                                    class_name="text-gray-300 leading-relaxed whitespace-pre-wrap mb-8",
+                                    class_name="text-gray-300 text-lg leading-loose whitespace-pre-wrap mb-10",
                                 ),
                                 rx.el.h2(
                                     "معیارهای شرکت\u200cکنندگان",
-                                    class_name="text-xl font-bold text-white mb-4",
+                                    class_name="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 mb-6",
                                 ),
                                 rx.el.div(
                                     rx.el.ul(
                                         rx.el.li(
-                                            rx.el.strong("نوع سلامت: "),
-                                            study["psychological_health_type"],
+                                            rx.el.span(
+                                                "نوع سلامت: ",
+                                                class_name="text-blue-300 font-semibold",
+                                            ),
+                                            translate_health(
+                                                study["psychological_health_type"]
+                                            ),
                                         ),
                                         rx.el.li(
-                                            rx.el.strong("محدوده سنی: "),
+                                            rx.el.span(
+                                                "محدوده سنی: ",
+                                                class_name="text-blue-300 font-semibold",
+                                            ),
                                             f"{study['age_range_min']} - {study['age_range_max']} سال",
                                         ),
                                         rx.el.li(
-                                            rx.el.strong("جنسیت: "),
-                                            study["gender_requirement"],
+                                            rx.el.span(
+                                                "جنسیت: ",
+                                                class_name="text-blue-300 font-semibold",
+                                            ),
+                                            translate_gender(
+                                                study["gender_requirement"]
+                                            ),
                                         ),
                                         rx.cond(
                                             study["custom_criteria"] != "",
                                             rx.el.li(
-                                                rx.el.strong("موارد اضافی: "),
+                                                rx.el.span(
+                                                    "موارد اضافی: ",
+                                                    class_name="text-blue-300 font-semibold",
+                                                ),
                                                 study["custom_criteria"],
                                             ),
                                         ),
-                                        class_name="list-disc list-inside space-y-2 text-gray-300",
+                                        class_name="space-y-4 text-gray-200 text-lg list-none",
                                     ),
-                                    class_name="bg-blue-900/20 p-6 rounded-2xl border border-blue-500/20",
+                                    class_name="bg-slate-900/50 p-8 rounded-3xl border border-white/10 hover:border-blue-500/30 transition-colors",
                                 ),
-                                class_name="bg-slate-900/60 backdrop-blur-md p-8 rounded-2xl shadow-sm border border-white/10",
+                                class_name="bg-slate-900/40 backdrop-blur-xl p-10 rounded-[2rem] shadow-xl border border-white/5 h-full",
                             ),
                             rx.el.div(
                                 rx.el.div(
                                     rx.el.h3(
-                                        "جزئیات مطالعه",
-                                        class_name="text-lg font-bold text-white mb-6",
+                                        "جزئیات کلیدی",
+                                        class_name="text-xl font-bold text-white mb-8 flex items-center gap-3",
                                     ),
                                     rx.el.div(
                                         detail_item(
@@ -499,12 +554,16 @@ def study_detail_page() -> rx.Component:
                                         ),
                                         detail_item(
                                             "نوع مکان",
-                                            study["location_type"],
+                                            translate_location(study["location_type"]),
                                             "map-pin",
                                         ),
                                         detail_item(
                                             "نوع آزمایش",
-                                            study.get("experiment_type", "مشخص نشده"),
+                                            translate_experiment(
+                                                study.get(
+                                                    "experiment_type", "مشخص نشده"
+                                                )
+                                            ),
                                             "microscope",
                                         ),
                                         rx.cond(
@@ -520,32 +579,32 @@ def study_detail_page() -> rx.Component:
                                             f"{study['sample_size']} شرکت\u200cکننده",
                                             "users",
                                         ),
-                                        class_name="space-y-3 mb-8",
+                                        class_name="space-y-4 mb-10",
                                     ),
                                     rx.el.button(
                                         "درخواست شرکت در مطالعه",
-                                        class_name="w-full py-3 px-4 bg-blue-600 text-white rounded-xl font-semibold shadow-md hover:bg-blue-700 hover:shadow-lg transition-all transform hover:-translate-y-0.5",
+                                        class_name="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-blue-500/25 hover:from-blue-500 hover:to-indigo-500 transition-all transform hover:-translate-y-1",
                                         on_click=ApplicationState.open_application_modal,
                                     ),
                                     rx.el.div(
                                         rx.icon(
                                             "info",
-                                            class_name="h-4 w-4 text-gray-400 ml-2",
+                                            class_name="h-5 w-5 text-gray-400 ml-2",
                                         ),
                                         rx.el.span(
                                             "ممکن است برای درخواست نیاز به ورود داشته باشید.",
-                                            class_name="text-xs text-gray-400",
+                                            class_name="text-sm text-gray-400",
                                         ),
-                                        class_name="flex items-center mt-4 justify-center",
+                                        class_name="flex items-center mt-6 justify-center bg-slate-950/30 p-3 rounded-xl border border-white/5",
                                     ),
-                                    class_name="bg-slate-900/60 backdrop-blur-md p-6 rounded-2xl shadow-sm border border-white/10 sticky top-24",
+                                    class_name="bg-slate-900/60 backdrop-blur-md p-8 rounded-[2rem] shadow-2xl border border-white/10 sticky top-28",
                                 ),
                                 class_name="space-y-6",
                             ),
-                            class_name="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto",
+                            class_name="grid grid-cols-1 lg:grid-cols-3 gap-10 max-w-7xl mx-auto",
                         )
                     ),
-                    class_name="px-4 sm:px-6 lg:px-8 py-8",
+                    class_name="px-4 sm:px-6 lg:px-8 py-12",
                 ),
                 rx.el.div(
                     "مطالعه یافت نشد.",
