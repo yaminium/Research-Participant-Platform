@@ -238,7 +238,7 @@ class ParticipantBrowserState(rx.State):
                 logging.exception(f"Error updating request: {e}")
                 raise e
 
-    @rx.var
+    @rx.var(cache=True)
     async def researcher_studies_options(self) -> list[Study]:
         auth = await self.get_state(AuthState)
         if not auth.current_user:

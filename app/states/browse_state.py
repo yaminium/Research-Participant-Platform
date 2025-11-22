@@ -1,6 +1,7 @@
 import reflex as rx
 from app.models import Study
 from app.states.auth_state import AuthState
+from app.states.study_state import StudyState
 
 
 class BrowseState(rx.State):
@@ -13,10 +14,8 @@ class BrowseState(rx.State):
     current_page: int = 1
     items_per_page: int = 10
 
-    @rx.var
+    @rx.var(cache=True)
     async def filtered_studies(self) -> list[Study]:
-        from app.states.study_state import StudyState
-
         study_state = await self.get_state(StudyState)
         studies = [s for s in study_state.studies if s["status"] == "Open"]
         if self.search_query:
@@ -69,20 +68,18 @@ class BrowseState(rx.State):
         end = start + self.items_per_page
         return studies[start:end]
 
-    @rx.var
+    @rx.var(cache=True)
     async def current_study(self) -> Study | None:
         study_id = self.router.page.params.get("id")
         if not study_id:
             return None
-        from app.states.study_state import StudyState
-
         study_state = await self.get_state(StudyState)
         for s in study_state.studies:
             if s["id"] == study_id:
                 return s
         return None
 
-    @rx.var
+    @rx.var(cache=True)
     async def current_study_researcher_name(self) -> str:
         study = await self.current_study
         if not study:

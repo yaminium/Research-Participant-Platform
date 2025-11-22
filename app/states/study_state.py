@@ -1,12 +1,14 @@
 import reflex as rx
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 import datetime
 import uuid
 import os
 import logging
 from supabase import create_client, Client
 from app.models import Study
-from app.states.auth_state import AuthState
+
+if TYPE_CHECKING:
+    from app.states.auth_state import AuthState
 
 
 class StudyState(rx.State):
@@ -215,8 +217,10 @@ class StudyState(rx.State):
     async def load_studies(self):
         await self._load_studies_from_supabase()
 
-    @rx.var
+    @rx.var(cache=True, auto_deps=False)
     async def my_studies(self) -> list[Study]:
+        from app.states.auth_state import AuthState
+
         auth_state = await self.get_state(AuthState)
         if not auth_state.current_user:
             return []
@@ -290,6 +294,8 @@ class StudyState(rx.State):
         if self.sample_size < 1:
             self.form_error = "حجم نمونه باید حداقل ۱ باشد."
             return
+        from app.states.auth_state import AuthState
+
         auth_state = await self.get_state(AuthState)
         if not auth_state.current_user:
             yield rx.redirect("/login")

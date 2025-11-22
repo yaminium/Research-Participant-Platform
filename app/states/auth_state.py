@@ -1,5 +1,5 @@
 import reflex as rx
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 import hashlib
 import datetime
 import uuid
@@ -7,6 +7,10 @@ import os
 from supabase import create_client, Client
 from app.models import User, Study, Application, ResearcherRequest
 import logging
+from app.states.study_state import StudyState
+
+if TYPE_CHECKING:
+    from app.states.participant_browser_state import ParticipantBrowserState
 
 
 class AuthState(rx.State):
@@ -363,13 +367,11 @@ class AuthState(rx.State):
             return []
         return self.current_user.get("bookmarks", [])
 
-    @rx.var
+    @rx.var(cache=True)
     async def bookmarked_studies(self) -> list[Study]:
         if not self.current_user:
             return []
         bookmark_ids = self.bookmarked_study_ids
-        from app.states.study_state import StudyState
-
         study_state = await self.get_state(StudyState)
         return [s for s in study_state.studies if s["id"] in bookmark_ids]
 
@@ -517,12 +519,11 @@ class AuthState(rx.State):
                     except Exception as e:
                         logging.exception(f"Error loading researchers: {e}")
 
-    @rx.var
+    @rx.var(cache=True, auto_deps=False)
     async def participant_enriched_requests(self) -> list[dict]:
         if not self.current_user or self.current_user["role"] != "participant":
             return []
         from app.states.participant_browser_state import ParticipantBrowserState
-        from app.states.study_state import StudyState
 
         pb_state = await self.get_state(ParticipantBrowserState)
         study_state = await self.get_state(StudyState)
@@ -562,7 +563,7 @@ class AuthState(rx.State):
             logging.exception(f"Error updating request: {e}")
             yield rx.toast.error("خطا در بروزرسانی وضعیت درخواست.")
 
-    @rx.var
+    @rx.var(cache=True, auto_deps=False)
     async def pending_requests_count(self) -> int:
         if not self.current_user or self.current_user["role"] != "participant":
             return 0

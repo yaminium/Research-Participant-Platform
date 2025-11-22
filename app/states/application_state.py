@@ -73,7 +73,7 @@ class ApplicationState(rx.State):
     async def load_applications(self):
         await self._load_applications_from_supabase()
 
-    @rx.var
+    @rx.var(cache=True)
     async def researcher_applications(self) -> list[Application]:
         auth_state = await self.get_state(AuthState)
         if (
@@ -93,7 +93,7 @@ class ApplicationState(rx.State):
             apps = [a for a in apps if a["status"] == self.filter_status]
         return sorted(apps, key=lambda x: x["created_at"], reverse=True)
 
-    @rx.var
+    @rx.var(cache=True)
     async def stats_total_applications(self) -> int:
         auth_state = await self.get_state(AuthState)
         if (
@@ -109,7 +109,7 @@ class ApplicationState(rx.State):
         apps = [a for a in self.applications if a["study_id"] in my_study_ids]
         return len(apps)
 
-    @rx.var
+    @rx.var(cache=True)
     async def stats_pending_applications(self) -> int:
         auth_state = await self.get_state(AuthState)
         if (
@@ -129,7 +129,7 @@ class ApplicationState(rx.State):
         ]
         return len(apps)
 
-    @rx.var
+    @rx.var(cache=True)
     async def stats_response_rate(self) -> str:
         auth_state = await self.get_state(AuthState)
         if (
@@ -145,7 +145,7 @@ class ApplicationState(rx.State):
         rate = int(processed / total * 100)
         return f"{rate}%"
 
-    @rx.var
+    @rx.var(cache=True)
     async def researcher_studies_for_filter(self) -> list[Study]:
         auth_state = await self.get_state(AuthState)
         if not auth_state.current_user:
