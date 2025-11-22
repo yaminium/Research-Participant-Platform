@@ -141,7 +141,140 @@ def edit_profile_modal() -> rx.Component:
                                         class_name=input_class,
                                     ),
                                 ),
-                                class_name="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8",
+                                class_name="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6",
+                            ),
+                            rx.cond(
+                                AuthState.is_participant,
+                                rx.el.div(
+                                    rx.el.div(
+                                        rx.el.h4(
+                                            "وضعیت شرکت\u2009کننده",
+                                            class_name="text-sm font-bold text-blue-400 mb-4 border-b border-white/10 pb-2",
+                                        ),
+                                        rx.el.div(
+                                            rx.el.label(
+                                                rx.el.input(
+                                                    type="radio",
+                                                    name="status",
+                                                    value="فعال",
+                                                    checked=AuthState.editing_participant_status
+                                                    == "فعال",
+                                                    on_change=lambda: AuthState.set_editing_participant_status(
+                                                        "فعال"
+                                                    ),
+                                                    class_name="sr-only peer",
+                                                ),
+                                                rx.el.div(
+                                                    rx.icon(
+                                                        "eye",
+                                                        class_name="h-5 w-5 mb-1 peer-checked:text-green-400 text-gray-400",
+                                                    ),
+                                                    rx.el.span(
+                                                        "فعال",
+                                                        class_name="text-sm font-medium peer-checked:text-white text-gray-400",
+                                                    ),
+                                                    rx.el.span(
+                                                        "قابل مشاهده برای پژوهشگران",
+                                                        class_name="text-[10px] peer-checked:text-gray-300 text-gray-500",
+                                                    ),
+                                                    class_name="flex flex-col items-center justify-center p-3 bg-slate-950/30 border border-white/10 rounded-xl cursor-pointer peer-checked:border-green-500/50 peer-checked:bg-green-900/10 transition-all",
+                                                ),
+                                                class_name="cursor-pointer",
+                                            ),
+                                            rx.el.label(
+                                                rx.el.input(
+                                                    type="radio",
+                                                    name="status",
+                                                    value="غیر فعال",
+                                                    checked=AuthState.editing_participant_status
+                                                    == "غیر فعال",
+                                                    on_change=lambda: AuthState.set_editing_participant_status(
+                                                        "غیر فعال"
+                                                    ),
+                                                    class_name="sr-only peer",
+                                                ),
+                                                rx.el.div(
+                                                    rx.icon(
+                                                        "eye-off",
+                                                        class_name="h-5 w-5 mb-1 peer-checked:text-gray-300 text-gray-400",
+                                                    ),
+                                                    rx.el.span(
+                                                        "غیر فعال",
+                                                        class_name="text-sm font-medium peer-checked:text-white text-gray-400",
+                                                    ),
+                                                    rx.el.span(
+                                                        "پنهان از پژوهشگران",
+                                                        class_name="text-[10px] peer-checked:text-gray-300 text-gray-500",
+                                                    ),
+                                                    class_name="flex flex-col items-center justify-center p-3 bg-slate-950/30 border border-white/10 rounded-xl cursor-pointer peer-checked:border-gray-500/50 peer-checked:bg-gray-800/20 transition-all",
+                                                ),
+                                                class_name="cursor-pointer",
+                                            ),
+                                            class_name="grid grid-cols-2 gap-4 mb-6",
+                                        ),
+                                    ),
+                                    rx.el.div(
+                                        rx.el.h4(
+                                            "تنظیمات حریم خصوصی",
+                                            class_name="text-sm font-bold text-blue-400 mb-4 border-b border-white/10 pb-2",
+                                        ),
+                                        rx.el.div(
+                                            rx.el.label(
+                                                rx.el.input(
+                                                    type="checkbox",
+                                                    checked=AuthState.editing_share_education,
+                                                    on_change=AuthState.toggle_editing_share_education,
+                                                    class_name="rounded border-gray-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500/40 mr-2",
+                                                ),
+                                                rx.el.span(
+                                                    "نمایش سطح تحصیلات",
+                                                    class_name="text-sm text-gray-300 mr-2",
+                                                ),
+                                                class_name="flex items-center mb-2",
+                                            ),
+                                            rx.el.label(
+                                                rx.el.input(
+                                                    type="checkbox",
+                                                    checked=AuthState.editing_share_age,
+                                                    on_change=AuthState.toggle_editing_share_age,
+                                                    class_name="rounded border-gray-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500/40 mr-2",
+                                                ),
+                                                rx.el.span(
+                                                    "نمایش سن",
+                                                    class_name="text-sm text-gray-300 mr-2",
+                                                ),
+                                                class_name="flex items-center mb-2",
+                                            ),
+                                            rx.el.label(
+                                                rx.el.input(
+                                                    type="checkbox",
+                                                    checked=AuthState.editing_share_occupation,
+                                                    on_change=AuthState.toggle_editing_share_occupation,
+                                                    class_name="rounded border-gray-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500/40 mr-2",
+                                                ),
+                                                rx.el.span(
+                                                    "نمایش شغل",
+                                                    class_name="text-sm text-gray-300 mr-2",
+                                                ),
+                                                class_name="flex items-center mb-2",
+                                            ),
+                                            rx.el.label(
+                                                rx.el.input(
+                                                    type="checkbox",
+                                                    checked=AuthState.editing_share_field_of_study,
+                                                    on_change=AuthState.toggle_editing_share_field_of_study,
+                                                    class_name="rounded border-gray-600 bg-slate-800 text-cyan-500 focus:ring-cyan-500/40 mr-2",
+                                                ),
+                                                rx.el.span(
+                                                    "نمایش رشته تحصیلی",
+                                                    class_name="text-sm text-gray-300 mr-2",
+                                                ),
+                                                class_name="flex items-center",
+                                            ),
+                                            class_name="bg-slate-950/30 p-4 rounded-xl border border-white/5 mb-8",
+                                        ),
+                                    ),
+                                ),
                             ),
                             rx.el.div(
                                 rx.radix.primitives.dialog.close(
@@ -239,6 +372,21 @@ def profile_header() -> rx.Component:
                         class_name="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900/50 text-blue-200 mt-3 uppercase tracking-wide border border-blue-500/20",
                     ),
                     rx.cond(
+                        AuthState.is_participant,
+                        rx.el.span(
+                            rx.cond(
+                                AuthState.current_user["participant_status"] == "فعال",
+                                "فعال",
+                                "غیر فعال",
+                            ),
+                            class_name=rx.cond(
+                                AuthState.current_user["participant_status"] == "فعال",
+                                "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-900/30 text-green-300 mt-3 mr-2 border border-green-500/20",
+                                "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-400 mt-3 mr-2 border border-gray-600",
+                            ),
+                        ),
+                    ),
+                    rx.cond(
                         AuthState.current_user["education_level"] != "",
                         rx.el.span(
                             AuthState.current_user["education_level"],
@@ -299,25 +447,121 @@ def researcher_stats() -> rx.Component:
     )
 
 
-def participant_stats() -> rx.Component:
+def request_card(req: dict) -> rx.Component:
     return rx.el.div(
-        rx.el.h3(
-            "فعالیت شرکت\u200cکننده", class_name="text-lg font-bold text-white mb-4"
+        rx.el.div(
+            rx.el.div(
+                rx.el.h4(
+                    req["study_title"],
+                    class_name="text-lg font-bold text-white mb-1 line-clamp-1",
+                ),
+                rx.el.div(
+                    rx.icon("user", class_name="h-4 w-4 text-cyan-400"),
+                    rx.el.span(
+                        req["researcher_name"], class_name="text-sm text-gray-300"
+                    ),
+                    class_name="flex items-center gap-2 mb-3",
+                ),
+                class_name="flex-1",
+            ),
+            rx.el.div(
+                rx.cond(
+                    req["status"] == "Pending",
+                    rx.el.span(
+                        "در انتظار پاسخ",
+                        class_name="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-500 border border-yellow-500/20",
+                    ),
+                    rx.cond(
+                        req["status"] == "Accepted",
+                        rx.el.span(
+                            "پذیرفته شده",
+                            class_name="px-2.5 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-500 border border-green-500/20",
+                        ),
+                        rx.el.span(
+                            "رد شده",
+                            class_name="px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20",
+                        ),
+                    ),
+                ),
+                class_name="flex-shrink-0 ml-4",
+            ),
+            class_name="flex justify-between items-start",
         ),
         rx.el.div(
-            stat_card("درخواست\u200cهای ارسال شده", "۸", "send", "text-blue-400"),
-            stat_card("پذیرفته شده", "۲", "check_check", "text-green-400"),
-            stat_card("مشارکت کرده", "۱", "trophy", "text-yellow-400"),
-            stat_card("درآمد", "۵۰ هزار تومان", "dollar-sign", "text-emerald-400"),
-            class_name="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4",
+            rx.el.p(
+                req["message"],
+                class_name="text-sm text-gray-400 bg-slate-950/50 p-3 rounded-lg border border-white/5 mb-4",
+            ),
+            rx.cond(
+                req["status"] == "Pending",
+                rx.el.div(
+                    rx.el.button(
+                        "رد کردن",
+                        on_click=lambda: AuthState.respond_to_request(
+                            req["id"], "Rejected"
+                        ),
+                        class_name="flex-1 py-2 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 text-sm font-medium transition-colors",
+                    ),
+                    rx.el.button(
+                        "پذیرفتن",
+                        on_click=lambda: AuthState.respond_to_request(
+                            req["id"], "Accepted"
+                        ),
+                        class_name="flex-1 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium shadow-lg shadow-green-900/20 transition-all",
+                    ),
+                    class_name="flex gap-3",
+                ),
+            ),
+            class_name="mt-2",
         ),
+        class_name="bg-slate-900/60 backdrop-blur-md rounded-2xl p-5 border border-white/10 hover:border-cyan-500/20 transition-all hover:shadow-[0_0_20px_rgba(6,182,212,0.1)]",
+    )
+
+
+def requests_section() -> rx.Component:
+    return rx.el.div(
+        rx.el.h3(
+            "درخواست\u2009های دریافتی",
+            class_name="text-lg font-bold text-white mb-4 flex items-center gap-2",
+        ),
+        rx.cond(
+            AuthState.participant_enriched_requests.length() > 0,
+            rx.el.div(
+                rx.foreach(AuthState.participant_enriched_requests, request_card),
+                class_name="grid grid-cols-1 md:grid-cols-2 gap-4",
+            ),
+            rx.el.div(
+                rx.icon("inbox", class_name="h-12 w-12 text-gray-600 mb-3"),
+                rx.el.p("هیچ درخواستی دریافت نشده است.", class_name="text-gray-500"),
+                class_name="flex flex-col items-center justify-center py-12 bg-slate-900/30 rounded-2xl border border-white/5 border-dashed",
+            ),
+        ),
+        class_name="mt-8",
+    )
+
+
+def participant_dashboard() -> rx.Component:
+    return rx.el.div(
+        rx.el.div(
+            rx.el.h3(
+                "فعالیت شرکت\u2009کننده", class_name="text-lg font-bold text-white mb-4"
+            ),
+            rx.el.div(
+                stat_card("درخواست\u2009های ارسال شده", "۸", "send", "text-blue-400"),
+                stat_card("پذیرفته شده", "۲", "check_check", "text-green-400"),
+                stat_card("مشارکت کرده", "۱", "trophy", "text-yellow-400"),
+                stat_card("درآمد", "۵۰ هزار تومان", "dollar-sign", "text-emerald-400"),
+                class_name="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4",
+            ),
+        ),
+        requests_section(),
     )
 
 
 def profile_view() -> rx.Component:
     return rx.el.div(
         profile_header(),
-        rx.cond(AuthState.is_researcher, researcher_stats(), participant_stats()),
+        rx.cond(AuthState.is_researcher, researcher_stats(), participant_dashboard()),
         edit_profile_modal(),
         class_name="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8",
     )

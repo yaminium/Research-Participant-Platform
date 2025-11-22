@@ -16,6 +16,21 @@ class User(TypedDict):
     date_of_birth: Optional[str]
     phone_number: Optional[str]
     profile_picture: Optional[str]
+    participant_status: Optional[str]
+    share_education: Optional[bool]
+    share_age: Optional[bool]
+    share_occupation: Optional[bool]
+    share_field_of_study: Optional[bool]
+
+
+class ResearcherRequest(TypedDict):
+    id: str
+    researcher_id: str
+    participant_id: str
+    study_id: str
+    message: str
+    status: str
+    created_at: str
 
 
 class Study(TypedDict):

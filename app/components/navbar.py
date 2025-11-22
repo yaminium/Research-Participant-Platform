@@ -64,7 +64,22 @@ def navbar() -> rx.Component:
                             ),
                         ),
                         navbar_link("مرور مطالعات", "/browse", "search"),
-                        navbar_link("پروفایل من", "/profile", "user"),
+                        rx.el.a(
+                            rx.el.div(
+                                rx.icon("user", class_name="h-5 w-5"),
+                                rx.el.span("پروفایل من"),
+                                rx.cond(
+                                    AuthState.pending_requests_count > 0,
+                                    rx.el.span(
+                                        AuthState.pending_requests_count,
+                                        class_name="flex items-center justify-center bg-red-500 text-white text-[10px] font-bold h-4 w-4 rounded-full absolute -top-1 -right-1 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]",
+                                    ),
+                                ),
+                                class_name="flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-white/5 text-gray-300 hover:text-cyan-300 transition-all duration-300 font-medium text-sm hover:shadow-[0_0_15px_rgba(34,211,238,0.15)] border border-transparent hover:border-cyan-500/20 relative",
+                            ),
+                            href="/profile",
+                            on_click=NavbarState.close_menu,
+                        ),
                         rx.el.button(
                             rx.el.div(
                                 rx.icon("log-out", class_name="h-5 w-5"),

@@ -55,7 +55,7 @@ def dashboard_nav(current_tab: str) -> rx.Component:
                 class_name=f"{base_class} {(active_class if current_tab == 'create_study' else inactive_class)}",
             ),
             rx.el.a(
-                rx.el.span("درخواست\u200cها"),
+                rx.el.span("درخواست\u2009ها"),
                 rx.cond(
                     ApplicationState.researcher_applications.length() > 0,
                     rx.el.span(
@@ -65,6 +65,11 @@ def dashboard_nav(current_tab: str) -> rx.Component:
                 ),
                 href="/dashboard",
                 class_name=f"{base_class} flex items-center {(active_class if current_tab == 'applications' else inactive_class)}",
+            ),
+            rx.el.a(
+                "مرور شرکت\u2009کنندگان",
+                href="/dashboard/participants",
+                class_name=f"{base_class} {(active_class if current_tab == 'participants' else inactive_class)}",
             ),
             class_name="flex space-x-2",
         ),

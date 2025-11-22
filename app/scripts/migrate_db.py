@@ -17,6 +17,12 @@ def run_migration_verification():
     migration_path_02 = os.path.join(
         os.path.dirname(__file__), "../migrations/02_create_user_tables.sql"
     )
+    migration_path_03 = os.path.join(
+        os.path.dirname(__file__), "../migrations/03_create_applications_table.sql"
+    )
+    migration_path_04 = os.path.join(
+        os.path.dirname(__file__), "../migrations/04_add_participant_visibility.sql"
+    )
     try:
         with open(migration_path, "r") as f:
             sql_content = f.read()
@@ -24,6 +30,14 @@ def run_migration_verification():
         if os.path.exists(migration_path_02):
             with open(migration_path_02, "r") as f:
                 sql_content_02 = f.read()
+        sql_content_03 = ""
+        if os.path.exists(migration_path_03):
+            with open(migration_path_03, "r") as f:
+                sql_content_03 = f.read()
+        sql_content_04 = ""
+        if os.path.exists(migration_path_04):
+            with open(migration_path_04, "r") as f:
+                sql_content_04 = f.read()
         print("""
 --- SQL MIGRATION REQUIRED ---""")
         print("Please run the following SQL in your Supabase Dashboard SQL Editor:")
@@ -33,6 +47,14 @@ def run_migration_verification():
             print("""
 --- MIGRATION 02: Create User Tables ---""")
             print(sql_content_02)
+        if sql_content_03:
+            print("""
+--- MIGRATION 03: Create Applications Table ---""")
+            print(sql_content_03)
+        if sql_content_04:
+            print("""
+--- MIGRATION 04: Add Participant Visibility & Requests ---""")
+            print(sql_content_04)
         print("-" * 80)
         print("""
 (Note: The Supabase Python client cannot execute DDL statements like ALTER TABLE directly via the REST API.)

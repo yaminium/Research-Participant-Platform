@@ -338,7 +338,6 @@ def browse_page() -> rx.Component:
             class_name="flex-grow min-h-screen",
         ),
         class_name="flex flex-col min-h-screen font-sans text-white bg-slate-950 bg-[url('/ChatGPT_page2.png')] bg-cover bg-center bg-fixed bg-no-repeat",
-
     )
 
 

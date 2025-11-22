@@ -1,3 +1,4 @@
-reflex==0.8.20
 reflex-google-auth
+python-dotenv
 supabase
+reflex

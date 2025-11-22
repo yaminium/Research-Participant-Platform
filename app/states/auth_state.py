@@ -5,7 +5,7 @@ import datetime
 import uuid
 import os
 from supabase import create_client, Client
-from app.models import User, Study, Application
+from app.models import User, Study, Application, ResearcherRequest
 import logging
 
 
@@ -40,6 +40,11 @@ class AuthState(rx.State):
             "date_of_birth": "1998-08-20",
             "phone_number": "09120000002",
             "profile_picture": "",
+            "participant_status": "فعال",
+            "share_education": True,
+            "share_age": True,
+            "share_occupation": True,
+            "share_field_of_study": True,
         },
     ]
     studies: list[Study] = [
@@ -183,6 +188,7 @@ class AuthState(rx.State):
         },
     ]
     applications: list[Application] = []
+    researcher_requests: list[ResearcherRequest] = []
     current_user: User | None = None
     is_authenticated: bool = False
     login_email: str = ""
@@ -202,6 +208,11 @@ class AuthState(rx.State):
     editing_date_of_birth: str = ""
     editing_phone_number: str = ""
     editing_profile_picture: str = ""
+    editing_participant_status: str = "غیر فعال"
+    editing_share_education: bool = True
+    editing_share_age: bool = True
+    editing_share_occupation: bool = True
+    editing_share_field_of_study: bool = True
 
     @property
     def _supabase_client(self) -> Client | None:
@@ -231,6 +242,16 @@ class AuthState(rx.State):
             "phone_number": user.get("phone_number", ""),
             "profile_picture": user.get("profile_picture", ""),
         }
+        if user["role"] == "participant":
+            data.update(
+                {
+                    "participant_status": user.get("participant_status", "غیر فعال"),
+                    "share_education": user.get("share_education", True),
+                    "share_age": user.get("share_age", True),
+                    "share_occupation": user.get("share_occupation", True),
+                    "share_field_of_study": user.get("share_field_of_study", True),
+                }
+            )
         try:
             res = (
                 client.table(table_name)
@@ -250,6 +271,21 @@ class AuthState(rx.State):
                 )
         except Exception as e:
             logging.exception(f"Supabase Sync Error: {e}")
+
+    async def _load_researcher_requests(self):
+        """Load researcher requests from Supabase."""
+        client = self._supabase_client
+        if not client:
+            return
+        try:
+            response = client.table("researcher_requests").select("*").execute()
+            if response.data:
+                self.researcher_requests = response.data
+                logging.info(
+                    f"Loaded {len(response.data)} researcher requests from Supabase."
+                )
+        except Exception as e:
+            logging.exception(f"Failed to load researcher requests: {e}")
 
     def _check_supabase_login(self, email: str, password_hash: str) -> User | None:
         """Check if user exists in Supabase tables and matches credentials."""
@@ -276,7 +312,7 @@ class AuthState(rx.State):
 
     def _map_supabase_to_user(self, data: dict, role: str) -> User:
         """Map Supabase record to User model."""
-        return {
+        user_data = {
             "id": data.get("user_id") or str(uuid.uuid4()),
             "email": data.get("email", ""),
             "password_hash": data.get("password_hash", ""),
@@ -291,6 +327,17 @@ class AuthState(rx.State):
             "phone_number": data.get("phone_number", ""),
             "profile_picture": data.get("profile_picture", ""),
         }
+        if role == "participant":
+            user_data.update(
+                {
+                    "participant_status": data.get("participant_status", "غیر فعال"),
+                    "share_education": data.get("share_education", True),
+                    "share_age": data.get("share_age", True),
+                    "share_occupation": data.get("share_occupation", True),
+                    "share_field_of_study": data.get("share_field_of_study", True),
+                }
+            )
+        return user_data
 
     def _hash_password(self, password: str) -> str:
         return hashlib.sha256(password.encode()).hexdigest()
@@ -511,6 +558,20 @@ class AuthState(rx.State):
             self.editing_date_of_birth = self.current_user.get("date_of_birth", "")
             self.editing_phone_number = self.current_user.get("phone_number", "")
             self.editing_profile_picture = self.current_user.get("profile_picture", "")
+            if self.current_user["role"] == "participant":
+                self.editing_participant_status = self.current_user.get(
+                    "participant_status", "غیر فعال"
+                )
+                self.editing_share_education = self.current_user.get(
+                    "share_education", True
+                )
+                self.editing_share_age = self.current_user.get("share_age", True)
+                self.editing_share_occupation = self.current_user.get(
+                    "share_occupation", True
+                )
+                self.editing_share_field_of_study = self.current_user.get(
+                    "share_field_of_study", True
+                )
             self.is_edit_profile_open = True
 
     @rx.event
@@ -551,6 +612,119 @@ class AuthState(rx.State):
             self.editing_profile_picture = file.name
 
     @rx.event
+    def set_editing_participant_status(self, value: str):
+        self.editing_participant_status = value
+
+    @rx.event
+    def toggle_editing_share_education(self, value: bool):
+        self.editing_share_education = value
+
+    @rx.event
+    def toggle_editing_share_age(self, value: bool):
+        self.editing_share_age = value
+
+    @rx.event
+    def toggle_editing_share_occupation(self, value: bool):
+        self.editing_share_occupation = value
+
+    @rx.event
+    def toggle_editing_share_field_of_study(self, value: bool):
+        self.editing_share_field_of_study = value
+
+    @rx.event
+    async def load_user_data(self):
+        """Load data specific to the current user."""
+        if not self.current_user:
+            return
+        await self._load_researcher_requests()
+        if self.current_user["role"] == "participant":
+            my_requests = [
+                r
+                for r in self.researcher_requests
+                if r["participant_id"] == self.current_user["id"]
+            ]
+            researcher_ids = list(set((r["researcher_id"] for r in my_requests)))
+            existing_ids = [u["id"] for u in self.users]
+            missing_ids = [rid for rid in researcher_ids if rid not in existing_ids]
+            if missing_ids:
+                client = self._supabase_client
+                if client:
+                    try:
+                        res = (
+                            client.table("researchers")
+                            .select("*")
+                            .in_("user_id", missing_ids)
+                            .execute()
+                        )
+                        for r_data in res.data:
+                            self.users.append(
+                                self._map_supabase_to_user(r_data, "researcher")
+                            )
+                    except Exception as e:
+                        logging.exception(f"Error loading researchers: {e}")
+
+    @rx.var
+    def participant_enriched_requests(self) -> list[dict]:
+        if not self.current_user or self.current_user["role"] != "participant":
+            return []
+        user_id = self.current_user["id"]
+        my_requests = sorted(
+            [r for r in self.researcher_requests if r["participant_id"] == user_id],
+            key=lambda x: x["created_at"],
+            reverse=True,
+        )
+        enriched = []
+        for req in my_requests:
+            study = next((s for s in self.studies if s["id"] == req["study_id"]), None)
+            study_title = study["title"] if study else "مطالعه نامشخص"
+            researcher_name = "پژوهشگر"
+            res_user = next(
+                (u for u in self.users if u["id"] == req["researcher_id"]), None
+            )
+            if res_user:
+                researcher_name = res_user["name"]
+            enriched.append(
+                {**req, "study_title": study_title, "researcher_name": researcher_name}
+            )
+        return enriched
+
+    @rx.event
+    async def respond_to_request(self, request_id: str, status: str):
+        client = self._supabase_client
+        if client:
+            try:
+                client.table("researcher_requests").update({"status": status}).eq(
+                    "id", request_id
+                ).execute()
+                new_requests = []
+                for req in self.researcher_requests:
+                    if req["id"] == request_id:
+                        updated_req = req.copy()
+                        updated_req["status"] = status
+                        new_requests.append(updated_req)
+                    else:
+                        new_requests.append(req)
+                self.researcher_requests = new_requests
+                action = "پذیرفته" if status == "Accepted" else "رد"
+                yield rx.toast.success(f"درخواست با موفقیت {action} شد.")
+            except Exception as e:
+                logging.exception(f"Error updating request: {e}")
+                yield rx.toast.error("خطا در بروزرسانی وضعیت درخواست.")
+
+    @rx.var
+    def pending_requests_count(self) -> int:
+        if not self.current_user or self.current_user["role"] != "participant":
+            return 0
+        user_id = self.current_user["id"]
+        return len(
+            [
+                r
+                for r in self.researcher_requests
+                if r["participant_id"] == user_id and r["status"] == "Pending"
+            ]
+        )
+
+    @rx.event
     def save_profile(self):
         if not self.current_user:
             return
@@ -564,6 +738,12 @@ class AuthState(rx.State):
         updated_user["date_of_birth"] = self.editing_date_of_birth
         updated_user["phone_number"] = self.editing_phone_number
         updated_user["profile_picture"] = self.editing_profile_picture
+        if self.current_user["role"] == "participant":
+            updated_user["participant_status"] = self.editing_participant_status
+            updated_user["share_education"] = self.editing_share_education
+            updated_user["share_age"] = self.editing_share_age
+            updated_user["share_occupation"] = self.editing_share_occupation
+            updated_user["share_field_of_study"] = self.editing_share_field_of_study
         new_users = []
         for u in self.users:
             if u["id"] == self.current_user["id"]:

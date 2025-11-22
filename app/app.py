@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
-load_dotenv()  # <-- load environment variables from .env
 
+load_dotenv()
 import reflex as rx
 from app.components.navbar import navbar
 from app.components.auth_forms import login_form, register_form
@@ -9,6 +9,7 @@ from app.components.profile_view import profile_view
 from app.components.study_form import study_form
 from app.components.dashboard import dashboard_nav, my_studies_list
 from app.components.applications_view import applications_view
+from app.components.participant_browser import participant_browser_view
 from app.components.browse_views import (
     browse_page,
     study_detail_page,
@@ -21,6 +22,7 @@ from app.components.legal_pages import privacy_page, terms_page
 from app.states.auth_state import AuthState
 from app.states.study_state import StudyState
 from app.states.application_state import ApplicationState
+from app.states.participant_browser_state import ParticipantBrowserState
 
 
 def base_layout(content: rx.Component) -> rx.Component:
@@ -370,6 +372,37 @@ def create_study_page() -> rx.Component:
     )
 
 
+def browse_participants_page() -> rx.Component:
+    return base_layout(
+        rx.cond(
+            AuthState.is_researcher,
+            rx.el.div(
+                dashboard_nav("participants"),
+                participant_browser_view(),
+                class_name="max-w-7xl mx-auto px-4 py-8",
+            ),
+            rx.el.div(
+                rx.el.div(
+                    rx.icon("lock", class_name="h-12 w-12 text-gray-400 mb-4 mx-auto"),
+                    rx.el.h2(
+                        "دسترسی غیرمجاز", class_name="text-2xl font-bold text-white"
+                    ),
+                    rx.el.p(
+                        "این بخش فقط برای پژوهشگران قابل دسترسی است.",
+                        class_name="text-gray-400 mt-2",
+                    ),
+                    rx.el.a(
+                        "بازگشت به پروفایل",
+                        href="/profile",
+                        class_name="mt-6 inline-block px-6 py-2.5 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors",
+                    ),
+                    class_name="text-center py-20 bg-slate-900/60 backdrop-blur-md rounded-xl border border-white/10 max-w-lg mx-auto mt-20",
+                )
+            ),
+        )
+    )
+
+
 app = rx.App(
     theme=rx.theme(appearance="light"),
     head_components=[
@@ -385,12 +418,17 @@ app = rx.App(
 app.add_page(index, route="/", on_load=StudyState.load_studies)
 app.add_page(login_page, route="/login")
 app.add_page(register_page, route="/register")
-app.add_page(profile_page, route="/profile")
+app.add_page(profile_page, route="/profile", on_load=AuthState.load_user_data)
 app.add_page(
     dashboard_page, route="/dashboard", on_load=ApplicationState.load_applications
 )
 app.add_page(my_studies_page, route="/my-studies")
 app.add_page(create_study_page, route="/create-study")
+app.add_page(
+    browse_participants_page,
+    route="/dashboard/participants",
+    on_load=ParticipantBrowserState.load_active_participants,
+)
 app.add_page(browse_page, route="/browse")
 app.add_page(favorites_page, route="/favorites")
 app.add_page(study_detail_page, route="/study/[id]")
