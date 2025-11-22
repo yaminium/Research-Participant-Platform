@@ -235,14 +235,19 @@ class AuthState(rx.State):
             "password_hash": user["password_hash"],
             "bookmarks": user.get("bookmarks", []),
             "created_at": user["created_at"],
-            "education_level": user.get("education_level", ""),
-            "field_of_study": user.get("field_of_study", ""),
-            "occupation": user.get("occupation", ""),
             "date_of_birth": user.get("date_of_birth"),
             "phone_number": user.get("phone_number", ""),
             "profile_picture": user.get("profile_picture", ""),
         }
-        if user["role"] == "participant":
+        if user["role"] == "researcher":
+            data.update(
+                {
+                    "education_level": user.get("education_level", ""),
+                    "field_of_study": user.get("field_of_study", ""),
+                    "occupation": user.get("occupation", ""),
+                }
+            )
+        elif user["role"] == "participant":
             data.update(
                 {
                     "participant_status": user.get("participant_status", "غیر فعال"),
