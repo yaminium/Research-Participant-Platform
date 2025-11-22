@@ -23,6 +23,9 @@ def run_migration_verification():
     migration_path_04 = os.path.join(
         os.path.dirname(__file__), "../migrations/04_add_participant_visibility.sql"
     )
+    migration_path_05 = os.path.join(
+        os.path.dirname(__file__), "../migrations/05_add_user_profile_columns.sql"
+    )
     try:
         with open(migration_path, "r") as f:
             sql_content = f.read()
@@ -38,6 +41,10 @@ def run_migration_verification():
         if os.path.exists(migration_path_04):
             with open(migration_path_04, "r") as f:
                 sql_content_04 = f.read()
+        sql_content_05 = ""
+        if os.path.exists(migration_path_05):
+            with open(migration_path_05, "r") as f:
+                sql_content_05 = f.read()
         print("""
 --- SQL MIGRATION REQUIRED ---""")
         print("Please run the following SQL in your Supabase Dashboard SQL Editor:")
@@ -55,6 +62,10 @@ def run_migration_verification():
             print("""
 --- MIGRATION 04: Add Participant Visibility & Requests ---""")
             print(sql_content_04)
+        if sql_content_05:
+            print("""
+--- MIGRATION 05: Add User Profile Columns ---""")
+            print(sql_content_05)
         print("-" * 80)
         print("""
 (Note: The Supabase Python client cannot execute DDL statements like ALTER TABLE directly via the REST API.)
@@ -97,6 +108,30 @@ def run_migration_verification():
             f"❌ FAILURE: Could not query new participant columns or request table. Error: {str(e)}"
         )
         print("Please execute MIGRATION 04.")
+    print("""
+--- VERIFYING USER PROFILE COLUMNS ---""")
+    try:
+        response = (
+            supabase.table("participants")
+            .select("date_of_birth, phone_number, profile_picture")
+            .limit(1)
+            .execute()
+        )
+        print("✅ SUCCESS: The 'participants' table contains profile columns.")
+        response = (
+            supabase.table("researchers")
+            .select(
+                "date_of_birth, phone_number, profile_picture, education_level, field_of_study, occupation"
+            )
+            .limit(1)
+            .execute()
+        )
+        print("✅ SUCCESS: The 'researchers' table contains profile columns.")
+    except Exception as e:
+        logging.exception(
+            f"❌ FAILURE: Could not query profile columns. Error: {str(e)}"
+        )
+        print("Please execute MIGRATION 05.")
 
 
 if __name__ == "__main__":
