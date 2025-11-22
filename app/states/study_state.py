@@ -10,6 +10,146 @@ from app.states.auth_state import AuthState
 
 
 class StudyState(rx.State):
+    studies: list[Study] = [
+        {
+            "id": "study_001",
+            "researcher_id": "user_1",
+            "title": "بررسی حافظه کاری در بزرگسالان جوان",
+            "description": "این مطالعه به بررسی نحوه پردازش اطلاعات در حافظه کاری افراد می\u200cپردازد. شرکت\u200cکنندگان باید تکالیف کامپیوتری ساده\u200cای را انجام دهند که توانایی نگهداری و دستکاری اطلاعات را می\u200cسنجد.",
+            "study_image": "",
+            "experiment_type": "Computer Based",
+            "sample_size": 30,
+            "compensation": "۵۰۰ هزار تومان",
+            "participant_criteria": "Health: Psychologically Healthy, Age: 18-35, Gender: Any",
+            "psychological_health_type": "Psychologically Healthy",
+            "age_range_min": 18,
+            "age_range_max": 35,
+            "gender_requirement": "Any",
+            "custom_criteria": "راست\u200cدست بودن، داشتن بینایی نرمال یا اصلاح شده",
+            "procedure_description": "شرکت\u200cکنندگان باید در مقابل کامپیوتر بنشینند و تکالیف حافظه کاری را انجام دهند. این شامل به خاطر سپردن دنباله\u200cهای عددی و پاسخ به سوالات مربوطه است. جلسه شامل آموزش اولیه و سپس انجام تکالیف اصلی است.",
+            "location_type": "In-Person",
+            "physical_location": "دانشگاه تهران، دانشکده روانشناسی، اتاق آزمایشگاه شناختی ۲۰۱",
+            "duration": "۴۵ دقیقه",
+            "contact_info": "dr.ahmadi@ut.ac.ir - ۰۲۱۶۱۱۱۱۲۳۴",
+            "status": "Open",
+            "created_at": "2024-01-15 10:00:00+00",
+        },
+        {
+            "id": "study_002",
+            "researcher_id": "user_1",
+            "title": "تاثیر مدیتیشن بر کاهش استرس دانشجویان",
+            "description": "در این پژوهش، اثربخشی برنامه مدیتیشن ۸ هفته\u200cای بر میزان استرس و اضطراب دانشجویان بررسی می\u200cشود. این مطالعه آنلاین است و شرکت\u200cکنندگان باید پرسشنامه\u200cهایی را قبل و بعد از مداخله تکمیل کنند.",
+            "study_image": "",
+            "experiment_type": "Computer Based",
+            "sample_size": 50,
+            "compensation": "۳۰۰ هزار تومان",
+            "participant_criteria": "Health: No Preference, Age: 18-30, Gender: Any",
+            "psychological_health_type": "No Preference",
+            "age_range_min": 18,
+            "age_range_max": 30,
+            "gender_requirement": "Any",
+            "custom_criteria": "دانشجو بودن، نداشتن سابقه بیماری\u200cهای روانی شدید",
+            "procedure_description": "شرکت\u200cکنندگان ابتدا پرسشنامه\u200cهای استرس و اضطراب را به صورت آنلاین تکمیل می\u200cکنند. سپس برای ۸ هفته در جلسات مدیتیشن آنلاین (۲ بار در هفته، هر جلسه ۳۰ دقیقه) شرکت خواهند کرد. در پایان، دوباره پرسشنامه\u200cها را پر می\u200cکنند.",
+            "location_type": "Online",
+            "physical_location": "Online",
+            "duration": "۸ هفته (جلسات ۳۰ دقیقه\u200cای)",
+            "contact_info": "meditation.study@gmail.com",
+            "status": "Open",
+            "created_at": "2024-01-20 09:00:00+00",
+        },
+        {
+            "id": "study_003",
+            "researcher_id": "user_1",
+            "title": "مطالعه fMRI: پردازش چهره در مغز",
+            "description": "این مطالعه تصویربرداری عصبی است که فعالیت مغز را هنگام مشاهده چهره\u200cهای مختلف بررسی می\u200cکند. از دستگاه fMRI برای ثبت تصاویر مغز استفاده می\u200cشود.",
+            "study_image": "",
+            "experiment_type": "FMRI",
+            "sample_size": 20,
+            "compensation": "۱ میلیون تومان",
+            "participant_criteria": "Health: Psychologically Healthy, Age: 20-40, Gender: Any",
+            "psychological_health_type": "Psychologically Healthy",
+            "age_range_min": 20,
+            "age_range_max": 40,
+            "gender_requirement": "Any",
+            "custom_criteria": "نداشتن فلزات در بدن، نداشتن کلاستروفوبیا، نداشتن مشکلات بینایی شدید",
+            "procedure_description": "شرکت\u200cکنندگان ابتدا غربالگری ایمنی fMRI را طی می\u200cکنند. سپس در دستگاه fMRI قرار می\u200cگیرند و تصاویر چهره\u200cهای مختلف را می\u200cبینند. باید با فشار دادن دکمه، نوع احساس را گزارش کنند. کل جلسه شامل ۱۵ دقیقه آموزش و ۴۵ دقیقه اسکن است.",
+            "location_type": "In-Person",
+            "physical_location": "بیمارستان امام خمینی، بخش تصویربرداری طبقه سوم",
+            "duration": "۱ ساعت",
+            "contact_info": "fmri.lab@yahoo.com - ۰۹۱۲۱۲۳۴۵۶۷",
+            "status": "Open",
+            "created_at": "2024-01-25 11:00:00+00",
+        },
+        {
+            "id": "study_004",
+            "researcher_id": "user_1",
+            "title": "بررسی الگوهای خواب و عملکرد شناختی",
+            "description": "این مطالعه رابطه بین کیفیت خواب و عملکرد حافظه و توجه را بررسی می\u200cکند. شرکت\u200cکنندگان باید یک هفته دفتر خواب نگه دارند و تکالیف شناختی آنلاین را انجام دهند.",
+            "study_image": "",
+            "experiment_type": "Computer Based",
+            "sample_size": 40,
+            "compensation": "۴۰۰ هزار تومان",
+            "participant_criteria": "Health: Psychologically Healthy, Age: 18-50, Gender: Any",
+            "psychological_health_type": "Psychologically Healthy",
+            "age_range_min": 18,
+            "age_range_max": 50,
+            "gender_requirement": "Any",
+            "custom_criteria": "",
+            "procedure_description": "شرکت\u200cکنندگان برای یک هفته، هر شب قبل از خواب و هر صبح بعد از بیدار شدن، یک پرسشنامه کوتاه درباره کیفیت خواب را تکمیل می\u200cکنند. همچنین روزانه ۱۰ دقیقه تکالیف حافظه و توجه را به صورت آنلاین انجام می\u200cدهند.",
+            "location_type": "Online",
+            "physical_location": "Online",
+            "duration": "۱ هفته (۱۰ دقیقه در روز)",
+            "contact_info": "sleep.research@ut.ac.ir",
+            "status": "Open",
+            "created_at": "2024-02-01 08:00:00+00",
+        },
+        {
+            "id": "study_005",
+            "researcher_id": "user_1",
+            "title": "تحریک الکتریکی مغز و یادگیری حرکتی",
+            "description": "این مطالعه تاثیر تحریک الکتریکی مغز (tDCS) بر بهبود یادگیری مهارت\u200cهای حرکتی را بررسی می\u200cکند. شرکت\u200cکنندگان باید تکالیف حرکتی را انجام دهند در حالی که تحریک الکتریکی دریافت می\u200cکنند.",
+            "study_image": "",
+            "experiment_type": "tDCS",
+            "sample_size": 25,
+            "compensation": "۸۰۰ هزار تومان",
+            "participant_criteria": "Health: Psychologically Healthy, Age: 18-35, Gender: Any",
+            "psychological_health_type": "Psychologically Healthy",
+            "age_range_min": 18,
+            "age_range_max": 35,
+            "gender_requirement": "Any",
+            "custom_criteria": "راست\u200cدست، نداشتن سابقه صرع، نداشتن صفحات فلزی در سر",
+            "procedure_description": "شرکت\u200cکنندگان در ۵ جلسه شرکت می\u200cکنند. در هر جلسه، الکترودها بر روی سر قرار می\u200cگیرند و جریان الکتریکی ضعیف (2mA) برای ۲۰ دقیقه اعمال می\u200cشود. همزمان، آنها یک تکلیف حرکتی با انگشتان (piano task) را انجام می\u200cدهند.",
+            "location_type": "In-Person",
+            "physical_location": "دانشگاه شهید بهشتی، پژوهشکده علوم شناختی، طبقه ۴",
+            "duration": "۵ جلسه (هر جلسه ۴۰ دقیقه)",
+            "contact_info": "tdcs.study@sbu.ac.ir - ۰۹۱۲۳۴۵۶۷۸۹",
+            "status": "Open",
+            "created_at": "2024-02-05 13:00:00+00",
+        },
+        {
+            "id": "study_006",
+            "researcher_id": "user_1",
+            "title": "مطالعه دوقلوها: وراثت و شخصیت",
+            "description": "این پژوهش به بررسی نقش ژنتیک در ویژگی\u200cهای شخصیتی می\u200cپردازد. ما به دنبال دوقلوهای همسان و ناهمسان برای شرکت در این مطالعه هستیم.",
+            "study_image": "",
+            "experiment_type": "Paper Based",
+            "sample_size": 30,
+            "compensation": "۶۰۰ هزار تومان (هر دوقلو)",
+            "participant_criteria": "Health: No Preference, Age: 18-60, Gender: Any",
+            "psychological_health_type": "No Preference",
+            "age_range_min": 18,
+            "age_range_max": 60,
+            "gender_requirement": "Any",
+            "custom_criteria": "دوقلو بودن (همسان یا ناهمسان)، رشد در یک محیط خانوادگی",
+            "procedure_description": "هر دو دوقلو باید پرسشنامه\u200cهای شخصیتی جامعی را تکمیل کنند. این شامل تست\u200cهای NEO-PI-R و MBTI است. همچنین یک مصاحبه نیم\u200cساختاریافته ۳۰ دقیقه\u200cای درباره تجربیات زندگی انجام می\u200cشود. جلسه حضوری است.",
+            "location_type": "In-Person",
+            "physical_location": "دانشگاه علامه طباطبایی، دانشکده روانشناسی، اتاق ۳۰۵",
+            "duration": "۲ ساعت",
+            "contact_info": "twins.personality@atu.ac.ir",
+            "status": "Open",
+            "created_at": "2024-02-10 10:00:00+00",
+        },
+    ]
     title: str = ""
     description: str = ""
     study_image: str = ""
@@ -66,8 +206,7 @@ class StudyState(rx.State):
             response = client.table("experiments").select("*").execute()
             data = response.data
             if data:
-                auth_state = await self.get_state(AuthState)
-                auth_state.studies = data
+                self.studies = data
                 logging.info(f"Loaded {len(data)} studies from Supabase.")
         except Exception as e:
             logging.exception(f"Failed to load studies from Supabase: {e}")
@@ -82,7 +221,7 @@ class StudyState(rx.State):
         if not auth_state.current_user:
             return []
         user_id = auth_state.current_user["id"]
-        return [s for s in auth_state.studies if s["researcher_id"] == user_id]
+        return [s for s in self.studies if s["researcher_id"] == user_id]
 
     @rx.var
     async def stats_total_studies(self) -> int:
@@ -101,8 +240,7 @@ class StudyState(rx.State):
 
     @rx.var
     async def featured_studies(self) -> list[Study]:
-        auth_state = await self.get_state(AuthState)
-        open_studies = [s for s in auth_state.studies if s["status"] == "Open"]
+        open_studies = [s for s in self.studies if s["status"] == "Open"]
         return sorted(open_studies, key=lambda x: x["created_at"], reverse=True)[:3]
 
     @rx.event
@@ -184,14 +322,14 @@ class StudyState(rx.State):
         }
         if self.editing_study_id:
             updated_list = []
-            for s in auth_state.studies:
+            for s in self.studies:
                 if s["id"] == self.editing_study_id:
                     updated_list.append(study_data)
                 else:
                     updated_list.append(s)
-            auth_state.studies = updated_list
+            self.studies = updated_list
         else:
-            auth_state.studies.append(study_data)
+            self.studies.append(study_data)
         self._sync_study_to_supabase(study_data)
         self.reset_form()
         yield rx.toast("مطالعه با موفقیت ذخیره شد!")
@@ -204,10 +342,7 @@ class StudyState(rx.State):
 
     @rx.event
     async def handle_edit_study(self, study_id: str):
-        auth_state = await self.get_state(AuthState)
-        study_to_edit = next(
-            (s for s in auth_state.studies if s["id"] == study_id), None
-        )
+        study_to_edit = next((s for s in self.studies if s["id"] == study_id), None)
         if study_to_edit:
             self.editing_study_id = study_to_edit["id"]
             self.title = study_to_edit["title"]
@@ -233,7 +368,6 @@ class StudyState(rx.State):
 
     @rx.event
     async def delete_study(self, study_id: str):
-        auth_state = await self.get_state(AuthState)
-        auth_state.studies = [s for s in auth_state.studies if s["id"] != study_id]
+        self.studies = [s for s in self.studies if s["id"] != study_id]
         self._delete_study_from_supabase(study_id)
         return rx.toast("مطالعه حذف شد.")

@@ -15,8 +15,10 @@ class BrowseState(rx.State):
 
     @rx.var
     async def filtered_studies(self) -> list[Study]:
-        auth_state = await self.get_state(AuthState)
-        studies = [s for s in auth_state.studies if s["status"] == "Open"]
+        from app.states.study_state import StudyState
+
+        study_state = await self.get_state(StudyState)
+        studies = [s for s in study_state.studies if s["status"] == "Open"]
         if self.search_query:
             query = self.search_query.lower()
             studies = [
@@ -72,8 +74,10 @@ class BrowseState(rx.State):
         study_id = self.router.page.params.get("id")
         if not study_id:
             return None
-        auth_state = await self.get_state(AuthState)
-        for s in auth_state.studies:
+        from app.states.study_state import StudyState
+
+        study_state = await self.get_state(StudyState)
+        for s in study_state.studies:
             if s["id"] == study_id:
                 return s
         return None

@@ -7,9 +7,11 @@ import os
 from supabase import create_client, Client
 from app.models import Application, Study
 from app.states.auth_state import AuthState
+from app.states.study_state import StudyState
 
 
 class ApplicationState(rx.State):
+    applications: list[Application] = []
     form_name: str = ""
     form_age: str = ""
     form_gender: str = "Prefer not to say"
@@ -62,8 +64,7 @@ class ApplicationState(rx.State):
             response = client.table("applications").select("*").execute()
             data = response.data
             if data:
-                auth_state = await self.get_state(AuthState)
-                auth_state.applications = data
+                self.applications = data
                 logging.info(f"Loaded {len(data)} applications from Supabase.")
         except Exception as e:
             logging.exception(f"Failed to load applications from Supabase: {e}")
@@ -80,11 +81,12 @@ class ApplicationState(rx.State):
             or auth_state.current_user["role"] != "researcher"
         ):
             return []
+        study_state = await self.get_state(StudyState)
         researcher_id = auth_state.current_user["id"]
         my_study_ids = [
-            s["id"] for s in auth_state.studies if s["researcher_id"] == researcher_id
+            s["id"] for s in study_state.studies if s["researcher_id"] == researcher_id
         ]
-        apps = [a for a in auth_state.applications if a["study_id"] in my_study_ids]
+        apps = [a for a in self.applications if a["study_id"] in my_study_ids]
         if self.filter_study_id != "All":
             apps = [a for a in apps if a["study_id"] == self.filter_study_id]
         if self.filter_status != "All":
@@ -99,11 +101,12 @@ class ApplicationState(rx.State):
             or auth_state.current_user["role"] != "researcher"
         ):
             return 0
+        study_state = await self.get_state(StudyState)
         researcher_id = auth_state.current_user["id"]
         my_study_ids = [
-            s["id"] for s in auth_state.studies if s["researcher_id"] == researcher_id
+            s["id"] for s in study_state.studies if s["researcher_id"] == researcher_id
         ]
-        apps = [a for a in auth_state.applications if a["study_id"] in my_study_ids]
+        apps = [a for a in self.applications if a["study_id"] in my_study_ids]
         return len(apps)
 
     @rx.var
@@ -114,13 +117,14 @@ class ApplicationState(rx.State):
             or auth_state.current_user["role"] != "researcher"
         ):
             return 0
+        study_state = await self.get_state(StudyState)
         researcher_id = auth_state.current_user["id"]
         my_study_ids = [
-            s["id"] for s in auth_state.studies if s["researcher_id"] == researcher_id
+            s["id"] for s in study_state.studies if s["researcher_id"] == researcher_id
         ]
         apps = [
             a
-            for a in auth_state.applications
+            for a in self.applications
             if a["study_id"] in my_study_ids and a["status"] == "Pending"
         ]
         return len(apps)
@@ -146,9 +150,10 @@ class ApplicationState(rx.State):
         auth_state = await self.get_state(AuthState)
         if not auth_state.current_user:
             return []
+        study_state = await self.get_state(StudyState)
         return [
             s
-            for s in auth_state.studies
+            for s in study_state.studies
             if s["researcher_id"] == auth_state.current_user["id"]
         ]
 
@@ -170,7 +175,7 @@ class ApplicationState(rx.State):
         existing_app = next(
             (
                 a
-                for a in auth_state.applications
+                for a in self.applications
                 if a["participant_id"] == current_user_id and a["study_id"] == study_id
             ),
             None,
@@ -266,7 +271,7 @@ class ApplicationState(rx.State):
             "status": "Pending",
             "created_at": datetime.datetime.now().isoformat(),
         }
-        auth_state.applications.append(new_app)
+        self.applications.append(new_app)
         self._sync_application_to_supabase(new_app)
         self.form_success = True
         self.form_error = ""
@@ -274,16 +279,15 @@ class ApplicationState(rx.State):
 
     @rx.event
     async def update_application_status(self, app_id: str, new_status: str):
-        auth_state = await self.get_state(AuthState)
         updated_list = []
         updated_app = None
-        for app in auth_state.applications:
+        for app in self.applications:
             if app["id"] == app_id:
                 app["status"] = new_status
                 updated_app = app
                 updated_list.append(app)
             else:
                 updated_list.append(app)
-        auth_state.applications = updated_list
+        self.applications = updated_list
         if updated_app:
             self._sync_application_to_supabase(updated_app)

@@ -47,148 +47,6 @@ class AuthState(rx.State):
             "share_field_of_study": True,
         },
     ]
-    studies: list[Study] = [
-        {
-            "id": "study_001",
-            "researcher_id": "user_1",
-            "title": "بررسی حافظه کاری در بزرگسالان جوان",
-            "description": "این مطالعه به بررسی نحوه پردازش اطلاعات در حافظه کاری افراد می\u200cپردازد. شرکت\u200cکنندگان باید تکالیف کامپیوتری ساده\u200cای را انجام دهند که توانایی نگهداری و دستکاری اطلاعات را می\u200cسنجد.",
-            "study_image": "",
-            "experiment_type": "Computer Based",
-            "sample_size": 30,
-            "compensation": "۵۰۰ هزار تومان",
-            "participant_criteria": "Health: Psychologically Healthy, Age: 18-35, Gender: Any",
-            "psychological_health_type": "Psychologically Healthy",
-            "age_range_min": 18,
-            "age_range_max": 35,
-            "gender_requirement": "Any",
-            "custom_criteria": "راست\u200cدست بودن، داشتن بینایی نرمال یا اصلاح شده",
-            "procedure_description": "شرکت\u200cکنندگان باید در مقابل کامپیوتر بنشینند و تکالیف حافظه کاری را انجام دهند. این شامل به خاطر سپردن دنباله\u200cهای عددی و پاسخ به سوالات مربوطه است. جلسه شامل آموزش اولیه و سپس انجام تکالیف اصلی است.",
-            "location_type": "In-Person",
-            "physical_location": "دانشگاه تهران، دانشکده روانشناسی، اتاق آزمایشگاه شناختی ۲۰۱",
-            "duration": "۴۵ دقیقه",
-            "contact_info": "dr.ahmadi@ut.ac.ir - ۰۲۱۶۱۱۱۱۲۳۴",
-            "status": "Open",
-            "created_at": "2024-01-15 10:00:00+00",
-        },
-        {
-            "id": "study_002",
-            "researcher_id": "user_1",
-            "title": "تاثیر مدیتیشن بر کاهش استرس دانشجویان",
-            "description": "در این پژوهش، اثربخشی برنامه مدیتیشن ۸ هفته\u200cای بر میزان استرس و اضطراب دانشجویان بررسی می\u200cشود. این مطالعه آنلاین است و شرکت\u200cکنندگان باید پرسشنامه\u200cهایی را قبل و بعد از مداخله تکمیل کنند.",
-            "study_image": "",
-            "experiment_type": "Computer Based",
-            "sample_size": 50,
-            "compensation": "۳۰۰ هزار تومان",
-            "participant_criteria": "Health: No Preference, Age: 18-30, Gender: Any",
-            "psychological_health_type": "No Preference",
-            "age_range_min": 18,
-            "age_range_max": 30,
-            "gender_requirement": "Any",
-            "custom_criteria": "دانشجو بودن، نداشتن سابقه بیماری\u200cهای روانی شدید",
-            "procedure_description": "شرکت\u200cکنندگان ابتدا پرسشنامه\u200cهای استرس و اضطراب را به صورت آنلاین تکمیل می\u200cکنند. سپس برای ۸ هفته در جلسات مدیتیشن آنلاین (۲ بار در هفته، هر جلسه ۳۰ دقیقه) شرکت خواهند کرد. در پایان، دوباره پرسشنامه\u200cها را پر می\u200cکنند.",
-            "location_type": "Online",
-            "physical_location": "Online",
-            "duration": "۸ هفته (جلسات ۳۰ دقیقه\u200cای)",
-            "contact_info": "meditation.study@gmail.com",
-            "status": "Open",
-            "created_at": "2024-01-20 09:00:00+00",
-        },
-        {
-            "id": "study_003",
-            "researcher_id": "user_1",
-            "title": "مطالعه fMRI: پردازش چهره در مغز",
-            "description": "این مطالعه تصویربرداری عصبی است که فعالیت مغز را هنگام مشاهده چهره\u200cهای مختلف بررسی می\u200cکند. از دستگاه fMRI برای ثبت تصاویر مغز استفاده می\u200cشود.",
-            "study_image": "",
-            "experiment_type": "FMRI",
-            "sample_size": 20,
-            "compensation": "۱ میلیون تومان",
-            "participant_criteria": "Health: Psychologically Healthy, Age: 20-40, Gender: Any",
-            "psychological_health_type": "Psychologically Healthy",
-            "age_range_min": 20,
-            "age_range_max": 40,
-            "gender_requirement": "Any",
-            "custom_criteria": "نداشتن فلزات در بدن، نداشتن کلاستروفوبیا، نداشتن مشکلات بینایی شدید",
-            "procedure_description": "شرکت\u200cکنندگان ابتدا غربالگری ایمنی fMRI را طی می\u200cکنند. سپس در دستگاه fMRI قرار می\u200cگیرند و تصاویر چهره\u200cهای مختلف را می\u200cبینند. باید با فشار دادن دکمه، نوع احساس را گزارش کنند. کل جلسه شامل ۱۵ دقیقه آموزش و ۴۵ دقیقه اسکن است.",
-            "location_type": "In-Person",
-            "physical_location": "بیمارستان امام خمینی، بخش تصویربرداری طبقه سوم",
-            "duration": "۱ ساعت",
-            "contact_info": "fmri.lab@yahoo.com - ۰۹۱۲۱۲۳۴۵۶۷",
-            "status": "Open",
-            "created_at": "2024-01-25 11:00:00+00",
-        },
-        {
-            "id": "study_004",
-            "researcher_id": "user_1",
-            "title": "بررسی الگوهای خواب و عملکرد شناختی",
-            "description": "این مطالعه رابطه بین کیفیت خواب و عملکرد حافظه و توجه را بررسی می\u200cکند. شرکت\u200cکنندگان باید یک هفته دفتر خواب نگه دارند و تکالیف شناختی آنلاین را انجام دهند.",
-            "study_image": "",
-            "experiment_type": "Computer Based",
-            "sample_size": 40,
-            "compensation": "۴۰۰ هزار تومان",
-            "participant_criteria": "Health: Psychologically Healthy, Age: 18-50, Gender: Any",
-            "psychological_health_type": "Psychologically Healthy",
-            "age_range_min": 18,
-            "age_range_max": 50,
-            "gender_requirement": "Any",
-            "custom_criteria": "",
-            "procedure_description": "شرکت\u200cکنندگان برای یک هفته، هر شب قبل از خواب و هر صبح بعد از بیدار شدن، یک پرسشنامه کوتاه درباره کیفیت خواب را تکمیل می\u200cکنند. همچنین روزانه ۱۰ دقیقه تکالیف حافظه و توجه را به صورت آنلاین انجام می\u200cدهند.",
-            "location_type": "Online",
-            "physical_location": "Online",
-            "duration": "۱ هفته (۱۰ دقیقه در روز)",
-            "contact_info": "sleep.research@ut.ac.ir",
-            "status": "Open",
-            "created_at": "2024-02-01 08:00:00+00",
-        },
-        {
-            "id": "study_005",
-            "researcher_id": "user_1",
-            "title": "تحریک الکتریکی مغز و یادگیری حرکتی",
-            "description": "این مطالعه تاثیر تحریک الکتریکی مغز (tDCS) بر بهبود یادگیری مهارت\u200cهای حرکتی را بررسی می\u200cکند. شرکت\u200cکنندگان باید تکالیف حرکتی را انجام دهند در حالی که تحریک الکتریکی دریافت می\u200cکنند.",
-            "study_image": "",
-            "experiment_type": "tDCS",
-            "sample_size": 25,
-            "compensation": "۸۰۰ هزار تومان",
-            "participant_criteria": "Health: Psychologically Healthy, Age: 18-35, Gender: Any",
-            "psychological_health_type": "Psychologically Healthy",
-            "age_range_min": 18,
-            "age_range_max": 35,
-            "gender_requirement": "Any",
-            "custom_criteria": "راست\u200cدست، نداشتن سابقه صرع، نداشتن صفحات فلزی در سر",
-            "procedure_description": "شرکت\u200cکنندگان در ۵ جلسه شرکت می\u200cکنند. در هر جلسه، الکترودها بر روی سر قرار می\u200cگیرند و جریان الکتریکی ضعیف (2mA) برای ۲۰ دقیقه اعمال می\u200cشود. همزمان، آنها یک تکلیف حرکتی با انگشتان (piano task) را انجام می\u200cدهند.",
-            "location_type": "In-Person",
-            "physical_location": "دانشگاه شهید بهشتی، پژوهشکده علوم شناختی، طبقه ۴",
-            "duration": "۵ جلسه (هر جلسه ۴۰ دقیقه)",
-            "contact_info": "tdcs.study@sbu.ac.ir - ۰۹۱۲۳۴۵۶۷۸۹",
-            "status": "Open",
-            "created_at": "2024-02-05 13:00:00+00",
-        },
-        {
-            "id": "study_006",
-            "researcher_id": "user_1",
-            "title": "مطالعه دوقلوها: وراثت و شخصیت",
-            "description": "این پژوهش به بررسی نقش ژنتیک در ویژگی\u200cهای شخصیتی می\u200cپردازد. ما به دنبال دوقلوهای همسان و ناهمسان برای شرکت در این مطالعه هستیم.",
-            "study_image": "",
-            "experiment_type": "Paper Based",
-            "sample_size": 30,
-            "compensation": "۶۰۰ هزار تومان (هر دوقلو)",
-            "participant_criteria": "Health: No Preference, Age: 18-60, Gender: Any",
-            "psychological_health_type": "No Preference",
-            "age_range_min": 18,
-            "age_range_max": 60,
-            "gender_requirement": "Any",
-            "custom_criteria": "دوقلو بودن (همسان یا ناهمسان)، رشد در یک محیط خانوادگی",
-            "procedure_description": "هر دو دوقلو باید پرسشنامه\u200cهای شخصیتی جامعی را تکمیل کنند. این شامل تست\u200cهای NEO-PI-R و MBTI است. همچنین یک مصاحبه نیم\u200cساختاریافته ۳۰ دقیقه\u200cای درباره تجربیات زندگی انجام می\u200cشود. جلسه حضوری است.",
-            "location_type": "In-Person",
-            "physical_location": "دانشگاه علامه طباطبایی، دانشکده روانشناسی، اتاق ۳۰۵",
-            "duration": "۲ ساعت",
-            "contact_info": "twins.personality@atu.ac.ir",
-            "status": "Open",
-            "created_at": "2024-02-10 10:00:00+00",
-        },
-    ]
-    applications: list[Application] = []
-    researcher_requests: list[ResearcherRequest] = []
     current_user: User | None = None
     is_authenticated: bool = False
     login_email: str = ""
@@ -276,21 +134,6 @@ class AuthState(rx.State):
                 )
         except Exception as e:
             logging.exception(f"Supabase Sync Error: {e}")
-
-    async def _load_researcher_requests(self):
-        """Load researcher requests from Supabase."""
-        client = self._supabase_client
-        if not client:
-            return
-        try:
-            response = client.table("researcher_requests").select("*").execute()
-            if response.data:
-                self.researcher_requests = response.data
-                logging.info(
-                    f"Loaded {len(response.data)} researcher requests from Supabase."
-                )
-        except Exception as e:
-            logging.exception(f"Failed to load researcher requests: {e}")
 
     def _check_supabase_login(self, email: str, password_hash: str) -> User | None:
         """Check if user exists in Supabase tables and matches credentials."""
@@ -506,10 +349,10 @@ class AuthState(rx.State):
             message = ""
             if study_id in bookmarks:
                 bookmarks.remove(study_id)
-                message = "از علاقه\u200cمندی\u200cها حذف شد"
+                message = "از علاقه\u2009مندی\u2009ها حذف شد"
             else:
                 bookmarks.append(study_id)
-                message = "به علاقه\u200cمندی\u200cها اضافه شد"
+                message = "به علاقه\u2009مندی\u2009ها اضافه شد"
             self.users[user_index]["bookmarks"] = bookmarks
             self.current_user = self.users[user_index]
             yield rx.toast(message)
@@ -521,11 +364,14 @@ class AuthState(rx.State):
         return self.current_user.get("bookmarks", [])
 
     @rx.var
-    def bookmarked_studies(self) -> list[Study]:
+    async def bookmarked_studies(self) -> list[Study]:
         if not self.current_user:
             return []
         bookmark_ids = self.bookmarked_study_ids
-        return [s for s in self.studies if s["id"] in bookmark_ids]
+        from app.states.study_state import StudyState
+
+        study_state = await self.get_state(StudyState)
+        return [s for s in study_state.studies if s["id"] in bookmark_ids]
 
     @rx.var
     def current_user_name(self) -> str:
@@ -641,11 +487,14 @@ class AuthState(rx.State):
         """Load data specific to the current user."""
         if not self.current_user:
             return
-        await self._load_researcher_requests()
+        from app.states.participant_browser_state import ParticipantBrowserState
+
+        pb_state = await self.get_state(ParticipantBrowserState)
+        await pb_state.load_researcher_requests()
         if self.current_user["role"] == "participant":
             my_requests = [
                 r
-                for r in self.researcher_requests
+                for r in pb_state.researcher_requests
                 if r["participant_id"] == self.current_user["id"]
             ]
             researcher_ids = list(set((r["researcher_id"] for r in my_requests)))
@@ -669,18 +518,25 @@ class AuthState(rx.State):
                         logging.exception(f"Error loading researchers: {e}")
 
     @rx.var
-    def participant_enriched_requests(self) -> list[dict]:
+    async def participant_enriched_requests(self) -> list[dict]:
         if not self.current_user or self.current_user["role"] != "participant":
             return []
+        from app.states.participant_browser_state import ParticipantBrowserState
+        from app.states.study_state import StudyState
+
+        pb_state = await self.get_state(ParticipantBrowserState)
+        study_state = await self.get_state(StudyState)
         user_id = self.current_user["id"]
         my_requests = sorted(
-            [r for r in self.researcher_requests if r["participant_id"] == user_id],
+            [r for r in pb_state.researcher_requests if r["participant_id"] == user_id],
             key=lambda x: x["created_at"],
             reverse=True,
         )
         enriched = []
         for req in my_requests:
-            study = next((s for s in self.studies if s["id"] == req["study_id"]), None)
+            study = next(
+                (s for s in study_state.studies if s["id"] == req["study_id"]), None
+            )
             study_title = study["title"] if study else "مطالعه نامشخص"
             researcher_name = "پژوهشگر"
             res_user = next(
@@ -695,36 +551,29 @@ class AuthState(rx.State):
 
     @rx.event
     async def respond_to_request(self, request_id: str, status: str):
-        client = self._supabase_client
-        if client:
-            try:
-                client.table("researcher_requests").update({"status": status}).eq(
-                    "id", request_id
-                ).execute()
-                new_requests = []
-                for req in self.researcher_requests:
-                    if req["id"] == request_id:
-                        updated_req = req.copy()
-                        updated_req["status"] = status
-                        new_requests.append(updated_req)
-                    else:
-                        new_requests.append(req)
-                self.researcher_requests = new_requests
-                action = "پذیرفته" if status == "Accepted" else "رد"
-                yield rx.toast.success(f"درخواست با موفقیت {action} شد.")
-            except Exception as e:
-                logging.exception(f"Error updating request: {e}")
-                yield rx.toast.error("خطا در بروزرسانی وضعیت درخواست.")
+        from app.states.participant_browser_state import ParticipantBrowserState
+
+        pb_state = await self.get_state(ParticipantBrowserState)
+        try:
+            await pb_state.update_request_status(request_id, status)
+            action = "پذیرفته" if status == "Accepted" else "رد"
+            yield rx.toast.success(f"درخواست با موفقیت {action} شد.")
+        except Exception as e:
+            logging.exception(f"Error updating request: {e}")
+            yield rx.toast.error("خطا در بروزرسانی وضعیت درخواست.")
 
     @rx.var
-    def pending_requests_count(self) -> int:
+    async def pending_requests_count(self) -> int:
         if not self.current_user or self.current_user["role"] != "participant":
             return 0
+        from app.states.participant_browser_state import ParticipantBrowserState
+
+        pb_state = await self.get_state(ParticipantBrowserState)
         user_id = self.current_user["id"]
         return len(
             [
                 r
-                for r in self.researcher_requests
+                for r in pb_state.researcher_requests
                 if r["participant_id"] == user_id and r["status"] == "Pending"
             ]
         )

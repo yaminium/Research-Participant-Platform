@@ -7,11 +7,13 @@ import datetime
 from supabase import create_client, Client
 from app.models import User, Study
 from app.states.auth_state import AuthState
+from app.states.study_state import StudyState
 
 
 class ParticipantBrowserState(rx.State):
     active_participants: list[User] = []
     filtered_participants: list[User] = []
+    researcher_requests: list[dict] = []
     filter_education: str = "All"
     filter_field_of_study: str = ""
     filter_age_min: int = 18
@@ -196,19 +198,56 @@ class ParticipantBrowserState(rx.State):
                 "created_at": datetime.datetime.now().isoformat(),
             }
             client.table("researcher_requests").insert(req).execute()
+            self.researcher_requests.append(req)
             self.is_request_modal_open = False
             yield rx.toast.success("درخواست با موفقیت ارسال شد!")
         except Exception as e:
             logging.exception(f"Error sending request: {e}")
             yield rx.toast.error("خطا در ارسال درخواست.")
 
+    @rx.event
+    async def load_researcher_requests(self):
+        client = self._supabase_client
+        if not client:
+            return
+        try:
+            response = client.table("researcher_requests").select("*").execute()
+            if response.data:
+                self.researcher_requests = response.data
+        except Exception as e:
+            logging.exception(f"Failed to load researcher requests: {e}")
+
+    @rx.event
+    async def update_request_status(self, request_id: str, status: str):
+        client = self._supabase_client
+        if client:
+            try:
+                client.table("researcher_requests").update({"status": status}).eq(
+                    "id", request_id
+                ).execute()
+                updated_list = []
+                for req in self.researcher_requests:
+                    if req["id"] == request_id:
+                        updated_req = req.copy()
+                        updated_req["status"] = status
+                        updated_list.append(updated_req)
+                    else:
+                        updated_list.append(req)
+                self.researcher_requests = updated_list
+            except Exception as e:
+                logging.exception(f"Error updating request: {e}")
+                raise e
+
     @rx.var
     async def researcher_studies_options(self) -> list[Study]:
         auth = await self.get_state(AuthState)
         if not auth.current_user:
             return []
+        study_state = await self.get_state(StudyState)
         return [
-            s for s in auth.studies if s["researcher_id"] == auth.current_user["id"]
+            s
+            for s in study_state.studies
+            if s["researcher_id"] == auth.current_user["id"]
         ]
 
     @rx.var
