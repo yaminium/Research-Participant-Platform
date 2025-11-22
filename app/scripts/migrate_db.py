@@ -61,7 +61,7 @@ def run_migration_verification():
 """)
     except FileNotFoundError as e:
         logging.exception(f"Warning: Could not find migration file at {migration_path}")
-    print("--- VERIFYING TABLE STRUCTURE ---")
+    print("--- VERIFYING EXPERIMENTS TABLE STRUCTURE ---")
     try:
         response = (
             supabase.table("experiments")
@@ -72,12 +72,31 @@ def run_migration_verification():
             .execute()
         )
         print("✅ SUCCESS: The 'experiments' table contains all required columns.")
-        print(f"Sample query result: {response.data}")
     except Exception as e:
-        logging.exception(f"Error details: {str(e)}")
-        print("❌ FAILURE: Could not query the new columns.")
-        print("""
-Please execute the SQL migration shown above to fix this.""")
+        logging.exception(f"Error verifying experiments table: {str(e)}")
+        print("❌ FAILURE: Could not query the new columns in experiments.")
+    print("""
+--- VERIFYING PARTICIPANT VISIBILITY & REQUESTS ---""")
+    try:
+        response = (
+            supabase.table("participants")
+            .select("participant_status, share_education")
+            .limit(1)
+            .execute()
+        )
+        print("✅ SUCCESS: The 'participants' table contains visibility columns.")
+        response = (
+            supabase.table("researcher_requests")
+            .select("id, status")
+            .limit(1)
+            .execute()
+        )
+        print("✅ SUCCESS: The 'researcher_requests' table exists.")
+    except Exception as e:
+        logging.exception(
+            f"❌ FAILURE: Could not query new participant columns or request table. Error: {str(e)}"
+        )
+        print("Please execute MIGRATION 04.")
 
 
 if __name__ == "__main__":
