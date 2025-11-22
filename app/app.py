@@ -1,3 +1,7 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()  # <-- load environment variables from .env
+
 import reflex as rx
 from app.components.navbar import navbar
 from app.components.auth_forms import login_form, register_form
@@ -25,7 +29,7 @@ def base_layout(content: rx.Component) -> rx.Component:
         rx.el.main(content, class_name="flex-grow min-h-screen"),
         footer(),
         info_modal(),
-        class_name="flex flex-col min-h-screen font-sans text-white bg-slate-950 bg-[url('/background.png')] bg-cover bg-center bg-fixed bg-no-repeat selection:bg-blue-500/30",
+        class_name="flex flex-col min-h-screen font-sans text-white bg-slate-950 bg-[url('/ChatGPT_homepage.png')] bg-cover bg-center bg-fixed bg-no-repeat selection:bg-blue-500/30",
         dir="rtl",
     )
 
@@ -104,14 +108,7 @@ def index() -> rx.Component:
                         class_name="flex flex-col sm:flex-row items-center justify-center gap-4",
                     ),
                     class_name="text-center max-w-5xl mx-auto pt-20 pb-16 px-4",
-                ),
-                rx.el.div(
-                    rx.el.img(
-                        src="/purple_navy_blue.png",
-                        class_name="rounded-2xl shadow-2xl border-4 border-white/10 mx-auto w-full max-w-4xl opacity-90",
-                    ),
-                    class_name="px-4 pb-20",
-                ),
+                )
             ),
             rx.cond(
                 StudyState.featured_studies.length() > 0,
