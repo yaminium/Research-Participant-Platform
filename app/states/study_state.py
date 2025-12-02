@@ -185,8 +185,17 @@ class StudyState(rx.State):
         if not client:
             return
         try:
-            client.table("experiments").upsert(study).execute()
-            logging.info(f"Synced study {study['id']} to Supabase.")
+            response = (
+                client.table("experiments").select("id").eq("id", study["id"]).execute()
+            )
+            if response.data:
+                client.table("experiments").update(study).eq(
+                    "id", study["id"]
+                ).execute()
+                logging.info(f"Updated study {study['id']} in Supabase.")
+            else:
+                client.table("experiments").insert(study).execute()
+                logging.info(f"Inserted study {study['id']} into Supabase.")
         except Exception as e:
             logging.exception(f"Failed to sync study {study['id']} to Supabase: {e}")
 

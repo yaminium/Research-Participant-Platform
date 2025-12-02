@@ -37,8 +37,20 @@ class ApplicationState(rx.State):
         if not client:
             return
         try:
-            client.table("applications").upsert(application).execute()
-            logging.info(f"Synced application {application['id']} to Supabase.")
+            response = (
+                client.table("applications")
+                .select("id")
+                .eq("id", application["id"])
+                .execute()
+            )
+            if response.data:
+                client.table("applications").update(application).eq(
+                    "id", application["id"]
+                ).execute()
+                logging.info(f"Updated application {application['id']} in Supabase.")
+            else:
+                client.table("applications").insert(application).execute()
+                logging.info(f"Inserted application {application['id']} into Supabase.")
         except Exception as e:
             logging.exception(
                 f"Failed to sync application {application['id']} to Supabase: {e}"
